@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetAero 2007 | Il Web e i Protocolli Applicativi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome per icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Segoe UI"', '"Trebuchet MS"', 'Tahoma', 'Verdana', 'sans-serif'],
+                        serif: ['Georgia', '"Times New Roman"', 'serif'],
+                        mono: ['"Lucida Console"', '"Courier New"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* =====================================================================
+           ESTETICA FRUTIGER AERO / WINDOWS VISTA / WEB 2.0 (2005 - 2008)
+           ===================================================================== */
+        body {
+            font-family: "Segoe UI", "Trebuchet MS", Tahoma, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 82% 10%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 210, 0.45) 14%, rgba(255, 255, 255, 0) 42%),
+                linear-gradient(180deg, #004e92 0%, #0082c8 24%, #4facfe 52%, #a8edea 74%, #65d328 90%, #248f00 100%);
+            background-attachment: fixed;
+            color: #0b2239;
+            overflow-x: hidden;
+        }
+
+        /* Raggi solari Web 2.0 (Sunburst) sul cielo */
+        .vista-sunburst {
+            position: fixed;
+            top: -220px;
+            right: -180px;
+            width: 780px;
+            height: 780px;
+            background: repeating-conic-gradient(
+                from 0deg,
+                rgba(255, 255, 255, 0.14) 0deg 10deg,
+                rgba(255, 255, 255, 0) 10deg 20deg
+            );
+            border-radius: 50%;
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 68%);
+            -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 68%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Finestra Windows Vista Aero Glass con doppio bordo e riflesso diagonale */
+        .vista-window {
+            position: relative;
+            background:
+                linear-gradient(125deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.08) 38%, rgba(255, 255, 255, 0.35) 39%, rgba(255, 255, 255, 0.05) 62%, rgba(255, 255, 255, 0) 100%),
+                linear-gradient(180deg, rgba(235, 248, 255, 0.90) 0%, rgba(215, 239, 255, 0.84) 100%);
+            backdrop-filter: blur(14px) saturate(170%);
+            -webkit-backdrop-filter: blur(14px) saturate(170%);
+            border: 2px solid #0b3d6d;
+            outline: 1px solid rgba(255, 255, 255, 0.9);
+            outline-offset: -3px;
+            box-shadow:
+                0 20px 44px rgba(0, 18, 46, 0.62),
+                0 6px 14px rgba(0, 0, 0, 0.45),
+                inset 0 2px 3px rgba(255, 255, 255, 0.95);
+        }
+
+        /* Barra del Titolo Lucida stile Windows Vista / IE7 */
+        .vista-titlebar {
+            background: linear-gradient(180deg,
+                #6db9f2 0%,
+                #2679c7 48%,
+                #0e569e 50%,
+                #1b6ec2 85%,
+                #3d95e8 100%
+            );
+            border-bottom: 2px solid #083461;
+            box-shadow:
+                inset 0 1px 1px rgba(255, 255, 255, 0.85),
+                0 3px 8px rgba(0, 20, 50, 0.4);
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 15, 40, 0.9), 0 0 8px rgba(0, 180, 255, 0.6);
+        }
+
+        /* Pulsanti finestra Vista (Minimizza, Ingrandisci, Chiudi rosso lucido) */
+        .vista-win-ctrl {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 25, 55, 0.85);
+            background: linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.15) 49%, rgba(0,40,90,0.25) 50%, rgba(255,255,255,0.3) 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 4px rgba(0,0,0,0.45);
+            color: #fff;
+            font-size: 10px;
+            text-shadow: 0 1px 2px #000;
+        }
+        .vista-win-close {
+            width: 34px;
+            background: linear-gradient(180deg, #ff9b9b 0%, #e02424 49%, #9b0000 50%, #d93838 100%);
+        }
+
+        /* Pannello interno con bordo 3D in rilievo e ombra profonda */
+        .aero-panel-3d {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(235, 246, 255, 0.90) 100%);
+            border: 1px solid #598bb8;
+            border-top-color: #ffffff;
+            border-left-color: #ffffff;
+            box-shadow:
+                0 10px 24px rgba(0, 25, 60, 0.35),
+                0 3px 6px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 #ffffff;
+        }
+
+        /* Terminale Lucido Oscuro stile Vista Command / Console */
+        .aero-terminal {
+            background: linear-gradient(180deg, #0b2542 0%, #051324 100%);
+            border: 2px solid #1e578c;
+            box-shadow:
+                0 12px 26px rgba(0, 15, 38, 0.55),
+                inset 0 2px 8px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(135, 215, 255, 0.4);
+        }
+
+        /* =====================================================================
+           BOTTONI ULTRA-GLOSSY 3D CON OMBRE PROFONDE (AQUA / VISTA / WEB 2.0)
+           ===================================================================== */
+        .aqua-btn, .aqua-btn-green, .aqua-btn-orange, .retro-btn-light {
+            position: relative;
+            border-radius: 9999px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            overflow: hidden;
+            transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+            cursor: pointer;
+        }
+
+        /* Banda lucida orizzontale netta a metà bottone (firma 2006) */
+        .aqua-btn::before, .aqua-btn-green::before, .aqua-btn-orange::before, .retro-btn-light::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 3%;
+            width: 94%;
+            height: 48%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.22) 100%);
+            border-radius: 9999px 9999px 40% 40%;
+            pointer-events: none;
+        }
+
+        /* Bottone Blu Aqua Profondo */
+        .aqua-btn {
+            background: linear-gradient(180deg, #5ce1ff 0%, #0088ee 49%, #0051a8 50%, #0077dd 88%, #2bb8ff 100%);
+            border: 1.5px solid #003377;
+            border-top-color: #7ee8ff;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0, 18, 45, 0.95);
+            box-shadow:
+                0 7px 16px rgba(0, 22, 55, 0.62),
+                0 3px 5px rgba(0, 0, 0, 0.48),
+                inset 0 2px 3px rgba(255, 255, 255, 0.95),
+                inset 0 -2px 4px rgba(0, 25, 70, 0.6);
+        }
+        .aqua-btn:hover:not(:disabled) {
+            filter: brightness(1.09);
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 22px rgba(0, 32, 80, 0.72),
+                0 4px 8px rgba(0, 0, 0, 0.52),
+                0 0 12px rgba(0, 210, 255, 0.65),
+                inset 0 2px 4px rgba(255, 255, 255, 1);
+        }
+
+        /* Bottone Verde Lime Frutiger Aero */
+        .aqua-btn-green {
+            background: linear-gradient(180deg, #b8ff66 0%, #44c416 49%, #237a04 50%, #3cb812 88%, #8cf244 100%);
+            border: 1.5px solid #144d00;
+            border-top-color: #d4ff9e;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(10, 42, 0, 0.95);
+            box-shadow:
+                0 7px 16px rgba(12, 48, 0, 0.62),
+                0 3px 5px rgba(0, 0, 0, 0.48),
+                inset 0 2px 3px rgba(255, 255, 255, 0.95),
+                inset 0 -2px 4px rgba(12, 55, 0, 0.6);
+        }
+        .aqua-btn-green:hover:not(:disabled) {
+            filter: brightness(1.08);
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 22px rgba(15, 60, 0, 0.72),
+                0 4px 8px rgba(0, 0, 0, 0.52),
+                0 0 12px rgba(126, 235, 45, 0.7),
+                inset 0 2px 4px rgba(255, 255, 255, 1);
+        }
+
+        /* Bottone Arancione / Ambra Web 2.0 */
+        .aqua-btn-orange {
+            background: linear-gradient(180deg, #ffe07d 0%, #ff8c00 49%, #c95200 50%, #f57c00 88%, #ffc14d 100%);
+            border: 1.5px solid #7a2e00;
+            border-top-color: #fff0b3;
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(60, 20, 0, 0.95);
+            box-shadow:
+                0 7px 16px rgba(65, 25, 0, 0.60),
+                0 3px 5px rgba(0, 0, 0, 0.48),
+                inset 0 2px 3px rgba(255, 255, 255, 0.95);
+        }
+
+        /* Bottone Chiaro / Argento 3D Windows Vista per stati inattivi */
+        .retro-btn-light {
+            background: linear-gradient(180deg, #ffffff 0%, #e4f1fc 49%, #c5dff5 50%, #dcecfb 90%, #ffffff 100%);
+            border: 1.5px solid #4879a8;
+            border-top-color: #ffffff;
+            color: #0b2d52;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 6px 14px rgba(0, 24, 58, 0.45),
+                0 2px 4px rgba(0, 0, 0, 0.35),
+                inset 0 1px 2px #ffffff,
+                inset 0 -2px 3px rgba(72, 121, 168, 0.35);
+        }
+        .retro-btn-light:hover:not(:disabled) {
+            background: linear-gradient(180deg, #ffffff 0%, #d4ecff 49%, #a8d4f7 50%, #cde7fc 100%);
+            border-color: #0066cc;
+            transform: translateY(-2px);
+            box-shadow:
+                0 9px 18px rgba(0, 30, 70, 0.55),
+                0 3px 6px rgba(0, 0, 0, 0.4),
+                0 0 10px rgba(0, 170, 255, 0.5);
+        }
+
+        /* Effetto pressione fisica su tutti i bottoni */
+        .aqua-btn:active:not(:disabled),
+        .aqua-btn-green:active:not(:disabled),
+        .aqua-btn-orange:active:not(:disabled),
+        .retro-btn-light:active:not(:disabled) {
+            transform: translateY(2px) scale(0.99);
+            box-shadow:
+                0 2px 5px rgba(0, 15, 35, 0.7),
+                inset 0 3px 6px rgba(0, 0, 0, 0.45);
+        }
+
+        /* Pillole & Badge con ombra profonda */
+        .retro-badge {
+            box-shadow:
+                0 4px 10px rgba(0, 20, 50, 0.38),
+                0 1px 3px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+        }
+
+        /* Input e Select incavati 3D */
+        .retro-input {
+            background: linear-gradient(180deg, #eef6fc 0%, #ffffff 35%);
+            border: 1.5px solid #4879a8;
+            border-bottom-color: #ffffff;
+            border-right-color: #ffffff;
+            box-shadow:
+                inset 0 2px 5px rgba(0, 25, 55, 0.38),
+                0 2px 5px rgba(0, 25, 55, 0.22);
+            color: #09233e;
+        }
+        .retro-input:focus {
+            outline: none;
+            border-color: #0077dd;
+            box-shadow:
+                inset 0 2px 5px rgba(0, 25, 55, 0.35),
+                0 0 0 3px rgba(0, 174, 255, 0.45);
+        }
+
+        /* Barra di avanzamento Gel Verde Smeraldo stile Windows Vista */
+        .vista-progress-track {
+            background: linear-gradient(180deg, #b8c9d9 0%, #e4eef7 50%, #ffffff 100%);
+            border: 1.5px solid #4e7599;
+            box-shadow: inset 0 2px 4px rgba(0, 20, 45, 0.45), 0 2px 5px rgba(0, 20, 50, 0.25);
+        }
+        .vista-progress-fill {
+            background:
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(255, 255, 255, 0.28) 0px,
+                    rgba(255, 255, 255, 0.28) 8px,
+                    transparent 8px,
+                    transparent 16px
+                ),
+                linear-gradient(180deg, #9eff6e 0%, #37c914 49%, #1a8f00 50%, #4de026 100%);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(55, 201, 20, 0.7);
+            animation: vistaStripes 1.2s linear infinite;
+            background-size: 22.6px 22.6px, 100% 100%;
+        }
+        @keyframes vistaStripes {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 22.6px 0, 0 0; }
+        }
+
+        /* Separatore inciso 3D */
+        .retro-divider {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(15, 65, 115, 0.45), transparent);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        /* Sfere lucide 3D con ombra pesante */
+        .aero-orb {
+            background: radial-gradient(circle at 32% 24%, #ffffff 0%, #99ebff 24%, #0077dd 68%, #002b66 100%);
+            box-shadow:
+                0 8px 18px rgba(0, 22, 55, 0.6),
+                0 3px 6px rgba(0, 0, 0, 0.45),
+                inset 0 -4px 8px rgba(0, 229, 255, 0.75),
+                inset 0 2px 4px rgba(255, 255, 255, 1);
+            border: 1.5px solid #ffffff;
+        }
+        .aero-orb-green {
+            background: radial-gradient(circle at 32% 24%, #ffffff 0%, #d4ff9e 24%, #2ca300 68%, #0f4700 100%);
+            box-shadow:
+                0 8px 18px rgba(12, 48, 0, 0.6),
+                0 3px 6px rgba(0, 0, 0, 0.45),
+                inset 0 -4px 8px rgba(173, 255, 47, 0.75),
+                inset 0 2px 4px rgba(255, 255, 255, 1);
+            border: 1.5px solid #ffffff;
+        }
+
+        /* Bolle d'acqua con riflesso speculare nitido */
+        .water-bubble {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.3) 22%, rgba(0, 195, 255, 0.14) 70%, rgba(255, 255, 255, 0.75) 100%);
+            box-shadow:
+                inset -5px -5px 12px rgba(0, 110, 220, 0.35),
+                inset 4px 4px 10px rgba(255, 255, 255, 0.95),
+                0 8px 20px rgba(0, 30, 70, 0.28);
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatBubble linear infinite;
+        }
+        @keyframes floatBubble {
+            0% { transform: translateY(0) translateX(0) scale(1); }
+            50% { transform: translateY(-20px) translateX(8px) scale(1.03); }
+            100% { transform: translateY(0) translateX(0) scale(1); }
+        }
+
+        /* Nodo attivo simulazione DNS */
+        .dns-node-active {
+            border: 2px solid #0066cc !important;
+            background: linear-gradient(180deg, #ffffff 0%, #bde7ff 49%, #8cd2ff 50%, #d9f2ff 100%) !important;
+            box-shadow:
+                0 0 0 4px rgba(0, 195, 255, 0.55),
+                0 12px 24px rgba(0, 25, 65, 0.65) !important;
+            transform: translateY(-4px) scale(1.04);
+        }
+
+        /* Animazione pacchetto HTTP */
+        @keyframes packetTravel {
+            0% { left: 8%; opacity: 0; transform: translateY(-50%) scale(0.75); }
+            15% { opacity: 1; transform: translateY(-50%) scale(1); }
+            85% { opacity: 1; transform: translateY(-50%) scale(1); }
+            100% { left: 88%; opacity: 0; transform: translateY(-50%) scale(0.75); }
+        }
+        @keyframes packetReturn {
+            0% { left: 88%; opacity: 0; transform: translateY(-50%) scale(0.75); }
+            15% { opacity: 1; transform: translateY(-50%) scale(1); }
+            85% { opacity: 1; transform: translateY(-50%) scale(1); }
+            100% { left: 8%; opacity: 0; transform: translateY(-50%) scale(0.75); }
+        }
+        .animate-packet-go { animation: packetTravel 0.75s ease-in-out forwards; }
+        .animate-packet-back { animation: packetReturn 0.75s ease-in-out forwards; }
+
+        /* Flip 3D Flashcard */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+
+        /* Scrollbar stile Windows Vista */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #d6e8f7; border-left: 1px solid #8ab4d9; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #8cd2ff 0%, #2b8be0 50%, #1665b8 51%, #4da6f5 100%);
+            border: 1px solid #0d4580;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-sky-600 selection:text-white relative">
+
+    <!-- SFONDO NOSTALGICO WEB 2.0 (Sunburst, Bolle, Colline Bliss) -->
+    <div class="vista-sunburst" aria-hidden="true"></div>
+
+    <div id="bubbles-layer" aria-hidden="true">
+        <div class="water-bubble w-16 h-16 top-28 left-[5%]" style="animation-duration: 6s;"></div>
+        <div class="water-bubble w-11 h-11 top-56 left-[13%]" style="animation-duration: 4.5s; animation-delay: 1s;"></div>
+        <div class="water-bubble w-24 h-24 top-32 right-[7%]" style="animation-duration: 7.5s; animation-delay: 0.5s;"></div>
+        <div class="water-bubble w-12 h-12 top-80 right-[16%]" style="animation-duration: 5.2s; animation-delay: 2s;"></div>
+        <div class="water-bubble w-20 h-20 bottom-36 left-[8%]" style="animation-duration: 6.8s; animation-delay: 1.5s;"></div>
+        <div class="water-bubble w-14 h-14 bottom-28 right-[11%]" style="animation-duration: 5.8s;"></div>
+    </div>
+
+    <!-- Colline verdi stile Bliss con riflesso lucido -->
+    <div class="fixed bottom-0 left-0 right-0 pointer-events-none z-0 overflow-hidden leading-none">
+        <svg viewBox="0 0 1440 230" class="w-full h-36 sm:h-52" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="hillBack2007" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#b5ff4d" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#2ea300" stop-opacity="0.98"/>
+                </linearGradient>
+                <linearGradient id="hillFront2007" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#8cff1a" stop-opacity="1"/>
+                    <stop offset="45%" stop-color="#38b000" stop-opacity="1"/>
+                    <stop offset="100%" stop-color="#145900" stop-opacity="1"/>
+                </linearGradient>
+            </defs>
+            <path fill="url(#hillBack2007)" d="M0,85 C340,185 640,5 990,95 C1210,150 1350,75 1440,60 L1440,230 L0,230 Z"></path>
+            <path fill="url(#hillFront2007)" d="M0,145 C290,65 550,195 890,120 C1150,68 1310,155 1440,130 L1440,230 L0,230 Z"></path>
+        </svg>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- NAVBAR / BARRA STRUMENTI WINDOWS VISTA & IE7                          -->
+    <!-- ===================================================================== -->
+    <header class="sticky top-0 z-50 border-b-2 border-sky-950 shadow-[0_8px_22px_rgba(0,18,45,0.65)]"
+            style="background: linear-gradient(180deg, rgba(240,250,255,0.95) 0%, rgba(196,229,255,0.92) 50%, rgba(168,214,252,0.95) 51%, rgba(214,239,255,0.96) 100%); backdrop-filter: blur(12px);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo Orb Lucido -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-full aero-orb flex items-center justify-center text-white group-hover:scale-105 transition">
+                        <i class="fa-solid fa-globe text-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold text-xl tracking-tight text-sky-950 drop-shadow-[0_1px_0_#fff]">Net<span class="text-sky-600">Aero</span></span>
+                            <span class="retro-badge text-[10px] font-extrabold text-white px-2 py-0.5 rounded-full"
+                                  style="background: linear-gradient(180deg, #9ce62a 0%, #3a9e00 100%);">
+                                v2.0 • 2007
+                            </span>
+                        </div>
+                        <span class="hidden sm:block font-serif italic text-[11px] text-sky-900">
+                            Laboratorio Interattivo di Sistemi e Reti
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Menu Desktop con Bottoni 3D ad ombra marcata -->
+                <nav class="hidden md:flex items-center gap-2.5">
+                    <a href="#teoria" class="retro-btn-light px-4 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-book-open text-sky-700"></i>Teoria
+                    </a>
+                    <a href="#laboratorio" class="retro-btn-light px-4 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-flask text-emerald-700"></i>Laboratorio
+                    </a>
+                    <a href="#studio" class="retro-btn-light px-4 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-graduation-cap text-amber-600"></i>Area Studio
+                    </a>
+                    <a href="#crediti" class="retro-btn-light px-4 py-1.5 text-xs sm:text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-sky-700"></i>Crediti
+                    </a>
+                    <button onclick="toggleBubbles()" id="bubble-toggle-btn" title="Attiva/Disattiva bolle fluttuanti" class="aqua-btn ml-1 px-3.5 py-1.5 text-xs">
+                        <i class="fa-solid fa-droplet mr-1"></i>Bolle: ON
+                    </button>
+                </nav>
+
+                <!-- Bottone Mobile 3D -->
+                <button id="mobile-menu-btn" class="md:hidden retro-btn-light px-3.5 py-2 text-sky-950" aria-label="Apri menu">
+                    <i class="fa-solid fa-bars text-base"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dropdown Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-sky-50/95 border-t-2 border-sky-300 px-4 pt-3 pb-4 space-y-2.5 shadow-2xl">
+            <a href="#teoria" class="mobile-link retro-btn-light block px-4 py-2.5 text-sm">
+                <i class="fa-solid fa-book-open text-sky-700 w-6"></i>Teoria dei Protocolli
+            </a>
+            <a href="#laboratorio" class="mobile-link retro-btn-light block px-4 py-2.5 text-sm">
+                <i class="fa-solid fa-flask text-emerald-700 w-6"></i>Laboratorio Interattivo
+            </a>
+            <a href="#studio" class="mobile-link retro-btn-light block px-4 py-2.5 text-sm">
+                <i class="fa-solid fa-graduation-cap text-amber-600 w-6"></i>Area Studio (Quiz & Flashcard)
+            </a>
+            <a href="#crediti" class="mobile-link retro-btn-light block px-4 py-2.5 text-sm">
+                <i class="fa-solid fa-circle-info text-sky-700 w-6"></i>Crediti & Fonti RFC
+            </a>
+        </div>
+    </header>
+
+    <!-- CONTENITORE PRINCIPALE -->
+    <main class="relative z-10">
+
+        <!-- ================================================================= -->
+        <!-- 1. FINESTRA HERO STILE WINDOWS VISTA / INTERNET EXPLORER 7         -->
+        <!-- ================================================================= -->
+        <section class="pt-8 pb-12 sm:pt-12 sm:pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="vista-window rounded-xl overflow-hidden">
+                <!-- Barra del titolo finestra Vista -->
+                <div class="vista-titlebar px-4 py-2 flex items-center justify-between select-none">
+                    <div class="flex items-center gap-2 text-xs sm:text-sm font-bold">
+                        <i class="fa-solid fa-earth-americas text-cyan-200"></i>
+                        <span>NetAero Explorer — Il Web e i Protocolli Applicativi (Stack TCP/IP)</span>
+                    </div>
+                    <div class="flex items-center gap-1" aria-hidden="true">
+                        <span class="vista-win-ctrl"><i class="fa-solid fa-minus"></i></span>
+                        <span class="vista-win-ctrl"><i class="fa-regular fa-square"></i></span>
+                        <span class="vista-win-ctrl vista-win-close"><i class="fa-solid fa-xmark"></i></span>
+                    </div>
+                </div>
+
+                <!-- Finta Barra Indirizzi Retrò -->
+                <div class="bg-gradient-to-b from-sky-100 to-sky-200/90 border-b border-sky-400 px-3 sm:px-5 py-2 flex items-center gap-2 text-xs">
+                    <span class="retro-btn-light px-2.5 py-1 text-[11px]"><i class="fa-solid fa-arrow-left text-sky-700"></i></span>
+                    <span class="retro-btn-light px-2.5 py-1 text-[11px]"><i class="fa-solid fa-arrow-right text-sky-700"></i></span>
+                    <div class="retro-input flex-1 rounded-md px-3 py-1 font-mono text-xs flex items-center justify-between truncate">
+                        <span><i class="fa-solid fa-lock text-emerald-600 mr-1.5"></i>https://www.netaero.edu.it/sistemi-e-reti/protocolli</span>
+                        <i class="fa-solid fa-rotate-right text-sky-700 ml-2"></i>
+                    </div>
+                </div>
+
+                <!-- Contenuto Hero -->
+                <div class="p-6 sm:p-10 lg:p-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-8">
+                            <div class="retro-badge inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white text-sky-900 text-xs font-extrabold uppercase tracking-wider mb-4">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-emerald-800 shadow-inner"></span>
+                                Guida Divulgativa &bull; Anno 2007 Edition
+                            </div>
+
+                            <h1 class="text-3xl sm:text-5xl font-extrabold text-sky-950 tracking-tight leading-tight mb-3 drop-shadow-[0_2px_0_rgba(255,255,255,0.95)]">
+                                Il Web e i <span class="text-sky-700 underline decoration-emerald-500 decoration-4 underline-offset-4">Protocolli Applicativi</span>
+                            </h1>
+
+                            <p class="font-serif italic text-base sm:text-lg text-sky-900 mb-4">
+                                «Dal click sul browser fino al server remoto: scopri i segreti di HTTP, DNS, HTTPS/TLS e SMTP.»
+                            </p>
+
+                            <p class="text-sm sm:text-base text-slate-800 font-medium leading-relaxed mb-7 max-w-2xl">
+                                Un percorso completo per comprendere il modello <strong>Client-Server</strong>, i livelli dello <strong>stack TCP/IP</strong> e i protocolli che fanno funzionare pagine web e posta elettronica, con simulatori interattivi e verifiche di apprendimento.
+                            </p>
+
+                            <div class="flex flex-wrap gap-4">
+                                <a href="#teoria" class="aqua-btn px-7 py-3.5 text-sm sm:text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-compass"></i> Esplora la Teoria
+                                </a>
+                                <a href="#laboratorio" class="aqua-btn-green px-7 py-3.5 text-sm sm:text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-play"></i> Avvia i Simulatori
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Orb Centrale Skeuomorfico -->
+                        <div class="lg:col-span-4 flex justify-center">
+                            <div class="relative w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center">
+                                <div class="absolute inset-0 rounded-full border-2 border-dashed border-sky-700/60 animate-spin" style="animation-duration: 28s;"></div>
+                                <div class="absolute inset-4 rounded-full border-2 border-white/90 shadow-inner"></div>
+                                <div class="w-36 h-36 sm:w-40 sm:h-40 rounded-full aero-orb flex flex-col items-center justify-center text-white text-center p-4 relative">
+                                    <i class="fa-solid fa-network-wired text-4xl mb-1 drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]"></i>
+                                    <span class="font-extrabold text-sm tracking-wide drop-shadow-[0_1px_2px_#000]">TCP/IP</span>
+                                    <span class="text-[11px] font-bold text-cyan-100">Livello 4 &bull; Web</span>
+                                </div>
+                                <span class="retro-badge absolute top-2 left-5 px-3 py-1 rounded-full bg-white text-sky-900 font-mono font-bold text-xs">HTTP</span>
+                                <span class="retro-badge absolute top-5 right-2 px-3 py-1 rounded-full bg-white text-emerald-900 font-mono font-bold text-xs">HTTPS</span>
+                                <span class="retro-badge absolute bottom-4 left-4 px-3 py-1 rounded-full bg-white text-indigo-900 font-mono font-bold text-xs">DNS</span>
+                                <span class="retro-badge absolute bottom-4 right-4 px-3 py-1 rounded-full bg-white text-purple-900 font-mono font-bold text-xs">SMTP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 2. SEZIONE TEORIA (FINESTRA VISTA)                                -->
+        <!-- ================================================================= -->
+        <section id="teoria" class="py-8 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="vista-window rounded-xl overflow-hidden">
+                <div class="vista-titlebar px-4 py-2 flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-bold"><i class="fa-solid fa-book-open mr-2 text-cyan-200"></i>Modulo 1 — Teoria del Web e dei Protocolli Applicativi</span>
+                    <span class="text-[11px] font-mono bg-sky-950/60 px-2.5 py-0.5 rounded border border-sky-300/40">RFC &amp; TCP/IP</span>
+                </div>
+
+                <div class="p-6 sm:p-8">
+                    <div class="text-center max-w-3xl mx-auto mb-8">
+                        <h2 class="text-2xl sm:text-4xl font-extrabold text-sky-950 drop-shadow-[0_1px_0_#fff]">Fondamenti di Rete e Protocolli</h2>
+                        <p class="font-serif italic text-sky-900 mt-1.5 text-sm sm:text-base">
+                            Clicca sui livelli dello stack TCP/IP, analizza i segmenti di un URL e confronta i quattro protocolli.
+                        </p>
+                    </div>
+
+                    <!-- 2.1 Client-Server & Stack TCP/IP -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-7 mb-8">
+                        <!-- Card Client-Server -->
+                        <div class="aero-panel-3d rounded-xl p-5 sm:p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3.5 mb-3">
+                                    <div class="w-11 h-11 rounded-full aero-orb text-white flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-arrows-left-right drop-shadow-[0_1px_2px_#000]"></i>
+                                    </div>
+                                    <h3 class="text-xl font-extrabold text-sky-950">Modello Client-Server</h3>
+                                </div>
+                                <p class="text-slate-800 text-xs sm:text-sm leading-relaxed mb-5">
+                                    Il Web si basa sull'architettura <strong>Client-Server</strong>: il <strong>Client</strong> (browser o app) avvia la comunicazione inviando una richiesta; il <strong>Server</strong> (host remoto sempre attivo in ascolto su una porta) elabora la richiesta e restituisce la risorsa o un messaggio di errore.
+                                </p>
+                            </div>
+
+                            <div class="bg-sky-50/90 rounded-xl p-4 border-2 border-sky-300 shadow-[inset_0_2px_6px_rgba(0,30,70,0.2)]">
+                                <div class="flex items-center justify-between gap-2 text-center">
+                                    <div class="flex-1 bg-white p-3 rounded-xl border border-sky-400 shadow-[0_5px_12px_rgba(0,25,60,0.3)]">
+                                        <i class="fa-solid fa-desktop text-3xl text-sky-700 mb-1"></i>
+                                        <div class="font-extrabold text-xs sm:text-sm text-sky-950">CLIENT</div>
+                                        <div class="text-[11px] font-semibold text-slate-600">Browser Web</div>
+                                    </div>
+
+                                    <div class="flex-1 flex flex-col items-center gap-2">
+                                        <span class="retro-badge text-[10px] font-mono font-bold text-white bg-sky-700 px-2.5 py-0.5 rounded-full">
+                                            Request &rarr;
+                                        </span>
+                                        <div class="w-full h-1.5 rounded-full bg-gradient-to-r from-sky-600 via-cyan-400 to-emerald-600 shadow"></div>
+                                        <span class="retro-badge text-[10px] font-mono font-bold text-white bg-emerald-700 px-2.5 py-0.5 rounded-full">
+                                            &larr; Response
+                                        </span>
+                                    </div>
+
+                                    <div class="flex-1 bg-white p-3 rounded-xl border border-emerald-500 shadow-[0_5px_12px_rgba(0,45,20,0.3)]">
+                                        <i class="fa-solid fa-server text-3xl text-emerald-700 mb-1"></i>
+                                        <div class="font-extrabold text-xs sm:text-sm text-emerald-950">SERVER</div>
+                                        <div class="text-[11px] font-semibold text-slate-600">Host Remoto</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Stack TCP/IP Cliccabile -->
+                        <div class="aero-panel-3d rounded-xl p-5 sm:p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3.5 mb-3">
+                                    <div class="w-11 h-11 rounded-full aero-orb-green text-white flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-layer-group drop-shadow-[0_1px_2px_#000]"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-extrabold text-sky-950">Stack TCP/IP (Clicca un livello)</h3>
+                                        <p class="text-xs font-semibold text-slate-600">Rapporto tra livello Applicazione e livelli sottostanti</p>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2.5 my-4">
+                                    <button onclick="selectTcpLayer(4)" id="tcp-btn-4" class="tcp-layer-btn aqua-btn w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between">
+                                        <span><span class="bg-white/25 px-2 py-0.5 rounded-full text-xs mr-2">4</span>Applicazione</span>
+                                        <span class="font-mono text-xs bg-sky-950/50 px-2.5 py-0.5 rounded-full">HTTP, DNS, HTTPS, SMTP</span>
+                                    </button>
+
+                                    <button onclick="selectTcpLayer(3)" id="tcp-btn-3" class="tcp-layer-btn retro-btn-light w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between">
+                                        <span><span class="bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full text-xs mr-2">3</span>Trasporto</span>
+                                        <span class="font-mono text-xs bg-white/80 text-slate-800 px-2.5 py-0.5 rounded-full border border-sky-300">TCP, UDP (Porte)</span>
+                                    </button>
+
+                                    <button onclick="selectTcpLayer(2)" id="tcp-btn-2" class="tcp-layer-btn retro-btn-light w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between">
+                                        <span><span class="bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full text-xs mr-2">2</span>Internet</span>
+                                        <span class="font-mono text-xs bg-white/80 text-slate-800 px-2.5 py-0.5 rounded-full border border-sky-300">IPv4, IPv6, ICMP</span>
+                                    </button>
+
+                                    <button onclick="selectTcpLayer(1)" id="tcp-btn-1" class="tcp-layer-btn retro-btn-light w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between">
+                                        <span><span class="bg-sky-200 text-sky-900 px-2 py-0.5 rounded-full text-xs mr-2">1</span>Accesso alla Rete</span>
+                                        <span class="font-mono text-xs bg-white/80 text-slate-800 px-2.5 py-0.5 rounded-full border border-sky-300">Ethernet, Wi-Fi, Fibra</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="tcp-layer-detail" class="p-3.5 rounded-xl bg-sky-50 border border-sky-400 text-xs sm:text-sm text-slate-800 shadow-inner">
+                                <strong class="text-sky-900 block mb-1">Livello 4 — Applicazione:</strong>
+                                È il livello più vicino all'utente. Definisce il formato dei messaggi scambiati tra programmi (browser, client email) e si affida al livello Trasporto per inviare i dati in rete.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2.2 Anatomia Interattiva dell'URL -->
+                    <div class="aero-panel-3d rounded-xl p-5 sm:p-6 mb-8">
+                        <div class="flex items-center gap-3.5 mb-4">
+                            <div class="w-11 h-11 rounded-full aero-orb text-white flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-link drop-shadow-[0_1px_2px_#000]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-extrabold text-sky-950">Anatomia Interattiva di un URL</h3>
+                                <p class="text-xs sm:text-sm text-slate-700">Premi ciascun pulsante colorato dell'indirizzo per analizzarne il ruolo</p>
+                            </div>
+                        </div>
+
+                        <div class="aero-terminal rounded-xl p-4 mb-4 overflow-x-auto">
+                            <div class="flex items-center gap-1.5 font-mono text-xs sm:text-sm whitespace-nowrap">
+                                <span class="text-emerald-400 mr-2"><i class="fa-solid fa-lock"></i></span>
+                                <button onclick="selectUrlPart('schema')" class="aqua-btn-orange px-3 py-1 text-xs">https</button>
+                                <span class="text-slate-300 font-bold">://</span>
+                                <button onclick="selectUrlPart('host')" class="aqua-btn px-3 py-1 text-xs">www.esempio.it</button>
+                                <span class="text-slate-300 font-bold">:</span>
+                                <button onclick="selectUrlPart('porta')" class="retro-btn-light px-3 py-1 text-xs">443</button>
+                                <button onclick="selectUrlPart('path')" class="aqua-btn-green px-3 py-1 text-xs">/corso/reti</button>
+                                <button onclick="selectUrlPart('query')" class="aqua-btn px-3 py-1 text-xs">?modulo=2</button>
+                                <button onclick="selectUrlPart('fragment')" class="aqua-btn-orange px-3 py-1 text-xs">#http</button>
+                            </div>
+                        </div>
+
+                        <div id="url-part-box" class="bg-white rounded-xl p-4 border border-sky-300 shadow-inner">
+                            <span id="url-part-badge" class="retro-badge inline-block px-3 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold text-xs mb-1">1. Schema / Protocollo</span>
+                            <h4 id="url-part-title" class="font-extrabold text-sky-950 text-base">https (HyperText Transfer Protocol Secure)</h4>
+                            <p id="url-part-desc" class="text-slate-800 text-xs sm:text-sm mt-1">Indica al browser quale protocollo applicativo usare per dialogare con il server. Qui specifica HTTP cifrato tramite TLS.</p>
+                        </div>
+                    </div>
+
+                    <!-- 2.3 Schede Dettagliate sui 4 Protocolli -->
+                    <div class="aero-panel-3d rounded-xl overflow-hidden">
+                        <div class="bg-gradient-to-b from-sky-100 to-sky-200 border-b-2 border-sky-400 px-5 py-4 flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-sky-950">I Quattro Protocolli Applicativi</h3>
+                                <p class="text-xs font-semibold text-slate-700">HTTP &amp; DNS (obbligatori) + HTTPS/TLS &amp; SMTP (sicurezza Web e posta elettronica)</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2.5">
+                                <button onclick="switchProtoTab('http')" id="ptab-http" class="ptab-btn aqua-btn px-4 py-2 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-globe mr-1.5"></i>HTTP
+                                </button>
+                                <button onclick="switchProtoTab('dns')" id="ptab-dns" class="ptab-btn retro-btn-light px-4 py-2 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-address-book mr-1.5 text-indigo-700"></i>DNS
+                                </button>
+                                <button onclick="switchProtoTab('https')" id="ptab-https" class="ptab-btn retro-btn-light px-4 py-2 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-shield-halved mr-1.5 text-emerald-700"></i>HTTPS / TLS
+                                </button>
+                                <button onclick="switchProtoTab('smtp')" id="ptab-smtp" class="ptab-btn retro-btn-light px-4 py-2 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-envelope mr-1.5 text-purple-700"></i>SMTP
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TAB HTTP -->
+                        <div id="pcontent-http" class="pcontent-panel p-5 sm:p-7">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
+                                <div class="lg:col-span-7 space-y-4">
+                                    <span class="retro-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-sky-900 text-xs font-extrabold">
+                                        Porta TCP 80 &bull; Stateless &bull; Request / Response
+                                    </span>
+                                    <h4 class="text-2xl font-extrabold text-sky-950">HTTP (HyperText Transfer Protocol)</h4>
+                                    <p class="text-slate-800 text-xs sm:text-sm leading-relaxed">
+                                        È il protocollo alla base del Web. È <strong>stateless</strong> (senza stato): il server non conserva memoria delle richieste precedenti; per mantenere una sessione attiva (es. carrello o login) si usano meccanismi aggiuntivi come <strong>Cookie</strong> o <strong>Token</strong>.
+                                    </p>
+
+                                    <div>
+                                        <h5 class="font-extrabold text-xs uppercase tracking-wider text-sky-950 mb-2">Metodi HTTP Principali</h5>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                            <div class="p-3 rounded-xl bg-white border border-sky-300 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                                <span class="retro-badge font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white">GET</span>
+                                                <p class="text-slate-800 mt-1.5">Recupera una risorsa (HTML, immagine, JSON) senza modificare lo stato del server.</p>
+                                            </div>
+                                            <div class="p-3 rounded-xl bg-white border border-sky-300 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                                <span class="retro-badge font-mono font-bold px-2.5 py-0.5 rounded-full bg-sky-600 text-white">POST</span>
+                                                <p class="text-slate-800 mt-1.5">Invia dati nel corpo (body) della richiesta per creare o elaborare nuove risorse.</p>
+                                            </div>
+                                            <div class="p-3 rounded-xl bg-white border border-sky-300 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                                <span class="retro-badge font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-600 text-white">PUT</span>
+                                                <p class="text-slate-800 mt-1.5">Sostituisce o aggiorna integralmente una risorsa già presente sul server.</p>
+                                            </div>
+                                            <div class="p-3 rounded-xl bg-white border border-sky-300 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                                <span class="retro-badge font-mono font-bold px-2.5 py-0.5 rounded-full bg-rose-600 text-white">DELETE</span>
+                                                <p class="text-slate-800 mt-1.5">Richiede la rimozione della risorsa identificata dall'URL.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="font-extrabold text-xs uppercase tracking-wider text-sky-950 mb-2">Codici di Stato (Status Codes)</h5>
+                                        <div class="flex flex-wrap gap-2 text-xs">
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 font-bold">200 OK</span>
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 font-bold">201 Created</span>
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-sky-100 text-sky-950 font-bold">301 Redirect</span>
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-amber-100 text-amber-950 font-bold">400 Bad Request</span>
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-amber-100 text-amber-950 font-bold">401/403 Auth Error</span>
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-amber-100 text-amber-950 font-bold">404 Not Found</span>
+                                            <span class="retro-badge px-3 py-1 rounded-full bg-rose-100 text-rose-950 font-bold">500 Server Error</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-5 aero-terminal rounded-xl p-5 text-slate-100 font-mono text-xs flex flex-col justify-between">
+                                    <div>
+                                        <div class="text-cyan-300 font-bold uppercase tracking-wider text-[11px] mb-3">Struttura Messaggi HTTP</div>
+                                        <div class="mb-4">
+                                            <span class="text-sky-400 font-bold block mb-1">// Richiesta (Client &rarr; Server)</span>
+                                            <div class="bg-slate-950/90 p-3 rounded-lg border border-sky-500/40 leading-relaxed">
+                                                <span class="text-emerald-400 font-bold">GET</span> /corso/reti HTTP/1.1<br>
+                                                <span class="text-amber-300">Host:</span> www.esempio.it<br>
+                                                <span class="text-amber-300">Accept:</span> text/html<br>
+                                                <span class="text-slate-400 italic">[Riga vuota CRLF]</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="text-emerald-400 font-bold block mb-1">// Risposta (Server &rarr; Client)</span>
+                                            <div class="bg-slate-950/90 p-3 rounded-lg border border-emerald-500/40 leading-relaxed">
+                                                HTTP/1.1 <span class="text-emerald-400 font-bold">200 OK</span><br>
+                                                <span class="text-amber-300">Content-Type:</span> text/html<br>
+                                                <span class="text-amber-300">Content-Length:</span> 48<br>
+                                                <span class="text-slate-400 italic">[Riga vuota CRLF]</span><br>
+                                                <span class="text-pink-300">&lt;h1&gt;Benvenuto su NetAero!&lt;/h1&gt;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB DNS -->
+                        <div id="pcontent-dns" class="pcontent-panel hidden p-5 sm:p-7">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
+                                <div class="lg:col-span-7 space-y-4">
+                                    <span class="retro-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-950 text-xs font-extrabold">
+                                        Porta UDP/TCP 53 &bull; Sistema Gerarchico Distribuito
+                                    </span>
+                                    <h4 class="text-2xl font-extrabold text-sky-950">DNS (Domain Name System)</h4>
+                                    <p class="text-slate-800 text-xs sm:text-sm leading-relaxed">
+                                        Traduce i nomi di dominio leggibili dall'uomo (es. <code class="font-mono bg-sky-100 px-1.5 py-0.5 rounded border border-sky-300">www.esempio.it</code>) negli indirizzi IP numerici usati dai router per instradare i pacchetti.
+                                    </p>
+                                    <div class="space-y-2.5 text-xs sm:text-sm text-slate-800">
+                                        <div class="p-3 rounded-xl bg-white border border-sky-300 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                            <strong class="text-indigo-800">1. Cache &amp; Resolver Ricorsivo:</strong> Controlla prima nella memoria locale (con tempo di validità <em>TTL</em>), poi interroga la gerarchia mondiale per conto del client.
+                                        </div>
+                                        <div class="p-3 rounded-xl bg-white border border-sky-300 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                            <strong class="text-indigo-800">2. Root (.) &rarr; TLD (.it/.com) &rarr; Autoritativo:</strong> La ricerca scende ad albero fino al server che custodisce la zona ufficiale del dominio.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-5 bg-sky-50 rounded-xl p-5 border border-sky-300 space-y-2.5 text-xs shadow-inner">
+                                    <h5 class="font-extrabold text-sky-950 text-sm mb-2">Record DNS Fondamentali</h5>
+                                    <div class="p-3 rounded-lg bg-white border border-sky-300 shadow-[0_3px_8px_rgba(0,25,55,0.2)]">
+                                        <span class="font-mono font-bold text-indigo-800">A / AAAA</span>
+                                        <p class="text-slate-800 mt-1">Associa il dominio a un indirizzo <strong>IPv4</strong> (A) o <strong>IPv6</strong> (AAAA).</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white border border-sky-300 shadow-[0_3px_8px_rgba(0,25,55,0.2)]">
+                                        <span class="font-mono font-bold text-indigo-800">CNAME</span>
+                                        <p class="text-slate-800 mt-1">Alias canonico: reindirizza un nome di dominio verso un altro nome.</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white border border-sky-300 shadow-[0_3px_8px_rgba(0,25,55,0.2)]">
+                                        <span class="font-mono font-bold text-indigo-800">MX (Mail Exchange)</span>
+                                        <p class="text-slate-800 mt-1">Specifica i server SMTP incaricati di ricevere le email per quel dominio.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB HTTPS / TLS -->
+                        <div id="pcontent-https" class="pcontent-panel hidden p-5 sm:p-7">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
+                                <div class="lg:col-span-7 space-y-4">
+                                    <span class="retro-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 text-xs font-extrabold">
+                                        Porta TCP 443 &bull; Crittografia &amp; Certificati X.509
+                                    </span>
+                                    <h4 class="text-2xl font-extrabold text-sky-950">HTTPS e TLS (Transport Layer Security)</h4>
+                                    <p class="text-slate-800 text-xs sm:text-sm leading-relaxed">
+                                        Protegge le comunicazioni Web incapsulando HTTP dentro un canale cifrato <strong>TLS</strong>. Impedisce attacchi di intercettazione (<em>sniffing</em>) e alterazione dei dati (<em>Man-in-the-Middle</em>).
+                                    </p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                                        <div class="p-3.5 rounded-xl bg-white border border-emerald-400 shadow-[0_4px_10px_rgba(0,40,20,0.2)]">
+                                            <i class="fa-solid fa-eye-slash text-emerald-700 text-base mb-1"></i>
+                                            <div class="font-extrabold text-emerald-950">Riservatezza</div>
+                                            <p class="text-slate-700 mt-1">Dati illeggibili a terzi grazie alla cifratura simmetrica.</p>
+                                        </div>
+                                        <div class="p-3.5 rounded-xl bg-white border border-emerald-400 shadow-[0_4px_10px_rgba(0,40,20,0.2)]">
+                                            <i class="fa-solid fa-shield-check text-emerald-700 text-base mb-1"></i>
+                                            <div class="font-extrabold text-emerald-950">Integrità</div>
+                                            <p class="text-slate-700 mt-1">Codice MAC verifica che nessun bit sia stato modificato.</p>
+                                        </div>
+                                        <div class="p-3.5 rounded-xl bg-white border border-emerald-400 shadow-[0_4px_10px_rgba(0,40,20,0.2)]">
+                                            <i class="fa-solid fa-certificate text-emerald-700 text-base mb-1"></i>
+                                            <div class="font-extrabold text-emerald-950">Autenticità</div>
+                                            <p class="text-slate-700 mt-1">Certificato firmato da una CA garantisce l'identità del sito.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-5 aero-terminal rounded-xl p-5 text-slate-100 space-y-2.5 text-xs">
+                                    <div class="font-bold text-emerald-400 uppercase tracking-wider text-[11px]">TLS 1.3 Handshake (Fasi Chiave)</div>
+                                    <div class="p-2.5 rounded-lg bg-slate-950/90 border border-sky-500/40">
+                                        <strong class="text-sky-300">1. ClientHello:</strong> Il browser invia versione TLS, cifrari supportati e parametri per lo scambio chiavi.
+                                    </div>
+                                    <div class="p-2.5 rounded-lg bg-slate-950/90 border border-emerald-500/40">
+                                        <strong class="text-emerald-300">2. ServerHello + Certificato:</strong> Il server risponde e invia il certificato digitale con la propria chiave pubblica.
+                                    </div>
+                                    <div class="p-2.5 rounded-lg bg-slate-950/90 border border-amber-500/40">
+                                        <strong class="text-amber-300">3. Chiave di Sessione:</strong> Entrambi derivano la stessa chiave simmetrica veloce per cifrare tutto il traffico HTTP successivo.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB SMTP -->
+                        <div id="pcontent-smtp" class="pcontent-panel hidden p-5 sm:p-7">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-center">
+                                <div class="lg:col-span-7 space-y-4">
+                                    <span class="retro-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-950 text-xs font-extrabold">
+                                        Porte TCP 25 / 587 / 465 &bull; Posta in Uscita
+                                    </span>
+                                    <h4 class="text-2xl font-extrabold text-sky-950">SMTP (Simple Mail Transfer Protocol)</h4>
+                                    <p class="text-slate-800 text-xs sm:text-sm leading-relaxed">
+                                        Governa la spedizione e l'inoltro delle email dal client al server di posta e tra server diversi tramite comandi testuali e codici numerici di risposta.
+                                    </p>
+                                    <div class="p-4 rounded-xl bg-amber-50 border-2 border-amber-400 text-xs sm:text-sm text-amber-950 shadow-[0_4px_10px_rgba(80,45,0,0.2)]">
+                                        <strong>Confronto rapido con la ricezione:</strong> SMTP serve solo per <em>inviare</em>. Per leggere la posta ricevuta si usano <strong>IMAP</strong> (sincronizza le cartelle sul server su più dispositivi) oppure <strong>POP3</strong> (scarica le email in locale).
+                                    </div>
+                                </div>
+
+                                <div class="lg:col-span-5 bg-sky-50 rounded-xl p-5 border border-sky-300 space-y-2 text-xs font-mono shadow-inner">
+                                    <h5 class="font-sans font-extrabold text-sky-950 text-sm mb-2">Sequenza Comandi SMTP</h5>
+                                    <div class="flex justify-between p-2 bg-white rounded-lg border border-purple-300 shadow-sm">
+                                        <span class="font-bold text-purple-900">EHLO</span>
+                                        <span class="font-sans text-slate-800">Presentazione del client</span>
+                                    </div>
+                                    <div class="flex justify-between p-2 bg-white rounded-lg border border-purple-300 shadow-sm">
+                                        <span class="font-bold text-purple-900">MAIL FROM:</span>
+                                        <span class="font-sans text-slate-800">Indirizzo mittente</span>
+                                    </div>
+                                    <div class="flex justify-between p-2 bg-white rounded-lg border border-purple-300 shadow-sm">
+                                        <span class="font-bold text-purple-900">RCPT TO:</span>
+                                        <span class="font-sans text-slate-800">Indirizzo destinatario</span>
+                                    </div>
+                                    <div class="flex justify-between p-2 bg-white rounded-lg border border-purple-300 shadow-sm">
+                                        <span class="font-bold text-purple-900">DATA ... .</span>
+                                        <span class="font-sans text-slate-800">Corpo messaggio chiuso da punto</span>
+                                    </div>
+                                    <div class="flex justify-between p-2 bg-white rounded-lg border border-purple-300 shadow-sm">
+                                        <span class="font-bold text-purple-900">QUIT</span>
+                                        <span class="font-sans text-slate-800">Chiusura sessione TCP</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 3. SEZIONE LABORATORIO INTERATTIVO (FINESTRA VISTA)               -->
+        <!-- ================================================================= -->
+        <section id="laboratorio" class="py-8 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="vista-window rounded-xl overflow-hidden">
+                <div class="vista-titlebar px-4 py-2 flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-bold"><i class="fa-solid fa-flask mr-2 text-emerald-200"></i>Modulo 2 — Laboratorio Pratico &amp; Simulatori di Rete</span>
+                    <span class="text-[11px] font-mono bg-emerald-950/70 px-2.5 py-0.5 rounded border border-emerald-300/40">Live Packet Lab</span>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-8">
+                    <!-- WIDGET 1: SIMULATORE DNS -->
+                    <div class="aero-panel-3d rounded-xl p-5 sm:p-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b-2 border-sky-200">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-11 h-11 rounded-full aero-orb text-white flex items-center justify-center shrink-0 mt-0.5">
+                                    <span class="font-extrabold drop-shadow-[0_1px_2px_#000]">1</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-sky-950">Risoluzione DNS Passo-Passo</h3>
+                                    <p class="text-slate-700 text-xs sm:text-sm mt-0.5">Confronta una risoluzione completa (<em>Cache vuota</em>) con una risposta immediata da <em>Cache Hit</em>.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2.5">
+                                <select id="dns-domain-select" class="retro-input font-bold text-xs sm:text-sm rounded-full px-4 py-2">
+                                    <option value="www.esempio.it|93.184.216.34|.it">www.esempio.it</option>
+                                    <option value="www.wikipedia.org|185.15.59.224|.org">www.wikipedia.org</option>
+                                    <option value="api.scuola-rete.com|104.21.48.19|.com">api.scuola-rete.com</option>
+                                </select>
+
+                                <select id="dns-cache-mode" class="retro-input font-bold text-xs sm:text-sm rounded-full px-4 py-2">
+                                    <option value="miss">Modalità: Cache Vuota (Completa)</option>
+                                    <option value="hit">Modalità: Cache Hit (Locale)</option>
+                                </select>
+
+                                <button id="dns-run-btn" onclick="startDnsSim()" class="aqua-btn px-6 py-2.5 text-xs sm:text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-play"></i> Risolvi Nome
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Barra avanzamento gel stile Windows Vista per DNS -->
+                        <div class="mt-5 mb-2">
+                            <div class="flex justify-between text-[11px] font-bold text-sky-950 mb-1">
+                                <span>Avanzamento Query DNS</span>
+                                <span id="dns-progress-label">0%</span>
+                            </div>
+                            <div class="vista-progress-track h-3.5 rounded-full overflow-hidden p-0.5">
+                                <div id="dns-progress-bar" class="vista-progress-fill h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- 5 Nodi Gerarchia DNS con ombre marcate -->
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 my-6">
+                            <div id="dnode-browser" class="bg-white rounded-xl p-4 border-2 border-sky-300 text-center transition-all duration-300 shadow-[0_6px_14px_rgba(0,25,60,0.35)]">
+                                <div class="w-10 h-10 mx-auto rounded-full aero-orb text-white flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-window-maximize drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <div class="font-extrabold text-xs sm:text-sm text-sky-950">1. Browser</div>
+                                <div class="text-[11px] font-semibold text-slate-600">Cache Locale</div>
+                            </div>
+
+                            <div id="dnode-resolver" class="bg-white rounded-xl p-4 border-2 border-sky-300 text-center transition-all duration-300 shadow-[0_6px_14px_rgba(0,25,60,0.35)]">
+                                <div class="w-10 h-10 mx-auto rounded-full aero-orb text-white flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-route drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <div class="font-extrabold text-xs sm:text-sm text-sky-950">2. Resolver ISP</div>
+                                <div class="text-[11px] font-semibold text-slate-600">1.1.1.1 / Provider</div>
+                            </div>
+
+                            <div id="dnode-root" class="bg-white rounded-xl p-4 border-2 border-sky-300 text-center transition-all duration-300 shadow-[0_6px_14px_rgba(0,25,60,0.35)]">
+                                <div class="w-10 h-10 mx-auto rounded-full aero-orb text-white flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-globe drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <div class="font-extrabold text-xs sm:text-sm text-sky-950">3. Root Server</div>
+                                <div class="text-[11px] font-semibold text-slate-600">Radice (.)</div>
+                            </div>
+
+                            <div id="dnode-tld" class="bg-white rounded-xl p-4 border-2 border-sky-300 text-center transition-all duration-300 shadow-[0_6px_14px_rgba(0,25,60,0.35)]">
+                                <div class="w-10 h-10 mx-auto rounded-full aero-orb text-white flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-folder-tree drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <div class="font-extrabold text-xs sm:text-sm text-sky-950">4. TLD Server</div>
+                                <div id="dnode-tld-sub" class="text-[11px] font-semibold text-slate-600">.it / .org / .com</div>
+                            </div>
+
+                            <div id="dnode-auth" class="col-span-2 sm:col-span-1 bg-white rounded-xl p-4 border-2 border-sky-300 text-center transition-all duration-300 shadow-[0_6px_14px_rgba(0,25,60,0.35)]">
+                                <div class="w-10 h-10 mx-auto rounded-full aero-orb-green text-white flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-server drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <div class="font-extrabold text-xs sm:text-sm text-sky-950">5. Autoritativo</div>
+                                <div class="text-[11px] font-semibold text-slate-600">Record A (IP)</div>
+                            </div>
+                        </div>
+
+                        <div class="aero-terminal rounded-xl p-4 font-mono text-xs sm:text-sm text-slate-100">
+                            <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-500/40 text-xs">
+                                <span class="text-cyan-300 font-bold"><i class="fa-solid fa-terminal mr-1.5"></i>Tracciamento Query DNS (UDP Porta 53)</span>
+                                <span id="dns-badge" class="px-3 py-0.5 rounded-full bg-sky-950 text-sky-200 border border-sky-400/50">Pronto</span>
+                            </div>
+                            <div id="dns-log" class="space-y-1.5 min-h-[115px] max-h-[180px] overflow-y-auto">
+                                <p class="text-slate-300 italic">Scegli un dominio, seleziona la modalità cache e premi "Risolvi Nome"...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="retro-divider">
+
+                    <!-- WIDGET 2: SIMULATORE SCAMBIO HTTP -->
+                    <div class="aero-panel-3d rounded-xl p-5 sm:p-6">
+                        <div class="flex items-start gap-3.5 pb-5 border-b-2 border-sky-200 mb-5">
+                            <div class="w-11 h-11 rounded-full aero-orb-green text-white flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="font-extrabold drop-shadow-[0_1px_2px_#000]">2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-sky-950">Costruttore &amp; Simulatore di Scambio HTTP</h3>
+                                <p class="text-slate-700 text-xs sm:text-sm mt-0.5">Componi una richiesta HTTP, inviala al Web Server e osserva il pacchetto viaggiare e la risposta generata.</p>
+                            </div>
+                        </div>
+
+                        <!-- Pista Animazione Pacchetto -->
+                        <div class="bg-sky-50 rounded-xl p-4 border-2 border-sky-300 mb-6 relative overflow-hidden shadow-inner">
+                            <div class="flex items-center justify-between max-w-2xl mx-auto relative py-2">
+                                <div class="retro-badge z-10 bg-white px-3.5 py-1.5 rounded-full font-extrabold text-xs text-sky-950 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-desktop text-sky-700"></i> Browser Client
+                                </div>
+
+                                <div class="flex-1 h-2 bg-sky-300 mx-3 rounded-full relative shadow-inner">
+                                    <div id="http-flying-packet" class="hidden absolute top-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-gradient-to-b from-cyan-400 to-blue-700 border border-white text-white font-mono font-bold text-[10px] shadow-[0_4px_10px_rgba(0,0,0,0.6)] whitespace-nowrap">
+                                        HTTP
+                                    </div>
+                                </div>
+
+                                <div class="retro-badge z-10 bg-white px-3.5 py-1.5 rounded-full font-extrabold text-xs text-emerald-950 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-server text-emerald-700"></i> Web Server
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <div class="lg:col-span-5 bg-sky-50/90 rounded-xl p-5 border border-sky-300 space-y-4 shadow-inner">
+                                <div class="font-extrabold text-sm text-sky-950 flex items-center gap-2">
+                                    <i class="fa-solid fa-sliders text-sky-700"></i> Parametri della Richiesta
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-2.5">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-800 mb-1">Metodo</label>
+                                        <select id="http-method" onchange="refreshHttpRaw()" class="retro-input w-full rounded-xl px-2.5 py-2 text-sm font-mono font-bold text-sky-800">
+                                            <option value="GET">GET</option>
+                                            <option value="POST">POST</option>
+                                            <option value="DELETE">DELETE</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="block text-xs font-bold text-slate-800 mb-1">Endpoint (Path)</label>
+                                        <select id="http-path" onchange="refreshHttpRaw()" class="retro-input w-full rounded-xl px-3 py-2 text-sm font-mono">
+                                            <option value="/api/studenti">/api/studenti</option>
+                                            <option value="/index.html">/index.html</option>
+                                            <option value="/area-riservata">/area-riservata</option>
+                                            <option value="/risorsa-inesistente">/risorsa-inesistente</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-800 mb-1">Header Authorization</label>
+                                    <select id="http-auth" onchange="refreshHttpRaw()" class="retro-input w-full rounded-xl px-3 py-2 text-xs font-mono">
+                                        <option value="">(Nessun header di autenticazione)</option>
+                                        <option value="Authorization: Bearer aero-token-2026">Authorization: Bearer aero-token-2026</option>
+                                    </select>
+                                </div>
+
+                                <div id="http-body-wrap" class="hidden">
+                                    <label class="block text-xs font-bold text-slate-800 mb-1">Body JSON (per metodo POST)</label>
+                                    <textarea id="http-body" rows="3" oninput="refreshHttpRaw()" class="retro-input w-full rounded-xl p-2.5 text-xs font-mono">{"studente": "Elena", "classe": "3A"}</textarea>
+                                </div>
+
+                                <button onclick="executeHttpExchange()" class="aqua-btn-green w-full py-3 text-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i> Invia Richiesta
+                                </button>
+                            </div>
+
+                            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="aero-terminal rounded-xl p-4 font-mono text-xs text-slate-100 flex flex-col">
+                                    <div class="text-sky-300 font-bold uppercase tracking-wider pb-2 mb-2 border-b border-sky-500/40 flex justify-between">
+                                        <span>HTTP Request</span>
+                                        <span class="text-slate-300">Client &rarr; Server</span>
+                                    </div>
+                                    <pre id="http-raw-req" class="whitespace-pre-wrap break-all flex-1 leading-relaxed"></pre>
+                                </div>
+
+                                <div class="aero-terminal rounded-xl p-4 font-mono text-xs text-slate-100 flex flex-col">
+                                    <div class="text-emerald-300 font-bold uppercase tracking-wider pb-2 mb-2 border-b border-emerald-500/40 flex justify-between items-center">
+                                        <span>HTTP Response</span>
+                                        <span id="http-status-pill" class="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-200 text-[10px]">In attesa</span>
+                                    </div>
+                                    <pre id="http-raw-res" class="whitespace-pre-wrap break-all flex-1 leading-relaxed text-slate-200">Premi "Invia Richiesta" per ricevere la risposta dal server...</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="retro-divider">
+
+                    <!-- WIDGET 3: CONSOLE SESSIONE SMTP -->
+                    <div class="aero-panel-3d rounded-xl p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b-2 border-sky-200 mb-5">
+                            <div class="flex items-start gap-3.5">
+                                <div class="w-11 h-11 rounded-full aero-orb text-white flex items-center justify-center shrink-0 mt-0.5">
+                                    <span class="font-extrabold drop-shadow-[0_1px_2px_#000]">3</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-sky-950">Console Sessione SMTP Interattiva</h3>
+                                    <p class="text-slate-700 text-xs sm:text-sm mt-0.5">Invia i comandi nella giusta sequenza e leggi la spiegazione didattica di ogni scambio.</p>
+                                </div>
+                            </div>
+                            <button onclick="resetSmtpSim()" class="retro-btn-light self-start sm:self-auto px-4 py-2 text-xs">
+                                <i class="fa-solid fa-rotate-right mr-1.5 text-sky-700"></i>Nuova Sessione
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <div class="lg:col-span-5 space-y-3">
+                                <button id="sbtn-0" onclick="runSmtpStep(0)" class="aqua-btn w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between">
+                                    <span>1. EHLO client.scuola.it</span>
+                                    <span class="bg-white/25 px-2 py-0.5 rounded-full text-[10px]">Saluto</span>
+                                </button>
+                                <button id="sbtn-1" onclick="runSmtpStep(1)" disabled class="retro-btn-light opacity-55 w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-not-allowed">
+                                    <span>2. MAIL FROM:&lt;marco@scuola.it&gt;</span>
+                                    <span class="bg-sky-200/80 px-2 py-0.5 rounded-full text-[10px]">Mittente</span>
+                                </button>
+                                <button id="sbtn-2" onclick="runSmtpStep(2)" disabled class="retro-btn-light opacity-55 w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-not-allowed">
+                                    <span>3. RCPT TO:&lt;docente@scuola.it&gt;</span>
+                                    <span class="bg-sky-200/80 px-2 py-0.5 rounded-full text-[10px]">Destinatario</span>
+                                </button>
+                                <button id="sbtn-3" onclick="runSmtpStep(3)" disabled class="retro-btn-light opacity-55 w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-not-allowed">
+                                    <span>4. DATA</span>
+                                    <span class="bg-sky-200/80 px-2 py-0.5 rounded-full text-[10px]">Avvio testo</span>
+                                </button>
+                                <button id="sbtn-4" onclick="runSmtpStep(4)" disabled class="retro-btn-light opacity-55 w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-not-allowed">
+                                    <span>5. Subject + [Messaggio] + .</span>
+                                    <span class="bg-sky-200/80 px-2 py-0.5 rounded-full text-[10px]">Invio + Fine</span>
+                                </button>
+                                <button id="sbtn-5" onclick="runSmtpStep(5)" disabled class="retro-btn-light opacity-55 w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-not-allowed">
+                                    <span>6. QUIT</span>
+                                    <span class="bg-sky-200/80 px-2 py-0.5 rounded-full text-[10px]">Chiusura</span>
+                                </button>
+                            </div>
+
+                            <div class="lg:col-span-7 flex flex-col gap-3">
+                                <div class="aero-terminal rounded-xl p-4 font-mono text-xs text-slate-100 flex-1">
+                                    <div class="flex items-center justify-between pb-2 mb-2 border-b border-sky-500/40">
+                                        <span class="text-cyan-300 font-bold"><i class="fa-solid fa-envelope-open-text mr-1.5"></i>mail.scuola.it : Porta 25</span>
+                                        <span class="text-emerald-400 font-bold">&#9679; Sessione Attiva</span>
+                                    </div>
+                                    <div id="smtp-log" class="space-y-2 min-h-[185px] max-h-[230px] overflow-y-auto leading-relaxed">
+                                        <div class="text-emerald-400">S: 220 mail.scuola.it ESMTP Service Ready</div>
+                                    </div>
+                                </div>
+
+                                <div id="smtp-didactic-note" class="bg-sky-50 rounded-xl p-3.5 border border-sky-400 text-xs sm:text-sm text-slate-800 shadow-inner">
+                                    <strong class="text-sky-950"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>Spiegazione:</strong>
+                                    Il server risponde con <code class="font-mono bg-white px-1.5 rounded border border-sky-300">220</code> per segnalare che il canale TCP è aperto ed è pronto a ricevere il comando di presentazione <code class="font-mono bg-white px-1.5 rounded border border-sky-300">EHLO</code>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 4. SEZIONE STUDIO (FINESTRA VISTA)                                -->
+        <!-- ================================================================= -->
+        <section id="studio" class="py-8 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="vista-window rounded-xl overflow-hidden">
+                <div class="vista-titlebar px-4 py-2 flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-bold"><i class="fa-solid fa-graduation-cap mr-2 text-amber-200"></i>Modulo 3 — Area Studio, Quiz &amp; Glossario</span>
+                    <span class="text-[11px] font-mono bg-sky-950/60 px-2.5 py-0.5 rounded border border-sky-300/40">Autovalutazione</span>
+                </div>
+
+                <div class="p-6 sm:p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 mb-8">
+                        <!-- 4.1 QUIZ DI AUTOVALUTAZIONE -->
+                        <div class="lg:col-span-7 aero-panel-3d rounded-xl p-5 sm:p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-sky-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full aero-orb text-white flex items-center justify-center">
+                                            <i class="fa-solid fa-circle-question drop-shadow-[0_1px_2px_#000]"></i>
+                                        </div>
+                                        <h3 class="text-xl font-extrabold text-sky-950">Quiz di Verifica</h3>
+                                    </div>
+                                    <span id="quiz-step-pill" class="retro-badge px-3 py-1 rounded-full bg-white text-sky-950 font-extrabold text-xs">
+                                        Domanda 1 / 8
+                                    </span>
+                                </div>
+
+                                <!-- Progress Bar Gel Windows Vista -->
+                                <div class="vista-progress-track h-3 rounded-full overflow-hidden p-0.5 mb-5">
+                                    <div id="quiz-progress-bar" class="vista-progress-fill h-full rounded-full transition-all duration-300" style="width: 12.5%;"></div>
+                                </div>
+
+                                <div id="quiz-active-view">
+                                    <h4 id="quiz-q-text" class="text-base sm:text-lg font-extrabold text-sky-950 mb-4 leading-snug"></h4>
+                                    <div id="quiz-opts-list" class="space-y-3 mb-4"></div>
+                                    <div id="quiz-fb-box" class="hidden p-4 rounded-xl text-xs sm:text-sm mb-4"></div>
+                                </div>
+
+                                <div id="quiz-end-view" class="hidden text-center py-6">
+                                    <div class="w-16 h-16 rounded-full aero-orb-green text-white flex items-center justify-center text-2xl mx-auto mb-4">
+                                        <i class="fa-solid fa-trophy drop-shadow-[0_2px_3px_#000]"></i>
+                                    </div>
+                                    <h4 class="text-2xl font-extrabold text-sky-950 mb-2">Quiz Completato!</h4>
+                                    <p id="quiz-final-msg" class="text-slate-800 font-semibold mb-6 text-base"></p>
+                                    <button onclick="resetQuiz()" class="aqua-btn px-7 py-3 text-sm">
+                                        <i class="fa-solid fa-rotate-right mr-1.5"></i>Ricomincia il Quiz
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="quiz-bottom-bar" class="flex items-center justify-between pt-4 border-t-2 border-sky-200">
+                                <span class="text-xs font-extrabold text-slate-800">Risposte esatte: <strong id="quiz-score-num" class="text-sky-700 text-sm">0</strong></span>
+                                <button id="quiz-next-btn" onclick="goNextQuestion()" disabled class="retro-btn-light opacity-50 px-5 py-2 text-xs sm:text-sm cursor-not-allowed">
+                                    Prossima <i class="fa-solid fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 4.2 FLASHCARD INTERATTIVE 3D -->
+                        <div class="lg:col-span-5 aero-panel-3d rounded-xl p-5 sm:p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between pb-3 mb-4 border-b-2 border-sky-200">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full aero-orb-green text-white flex items-center justify-center">
+                                            <i class="fa-solid fa-clone drop-shadow-[0_1px_2px_#000]"></i>
+                                        </div>
+                                        <h3 class="text-xl font-extrabold text-sky-950">Flashcard</h3>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="shuffleCards()" title="Mischia carte" class="retro-btn-light px-3 py-1 text-xs">
+                                            <i class="fa-solid fa-shuffle text-sky-700"></i>
+                                        </button>
+                                        <span id="fc-counter" class="retro-badge px-3 py-1 rounded-full bg-white text-sky-950 font-extrabold text-xs">
+                                            1 / 10
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <p class="font-serif italic text-xs text-sky-900 text-center mb-3">
+                                    <i class="fa-solid fa-hand-pointer text-sky-700 mr-1"></i>Clicca la scheda lucida per girarla
+                                </p>
+
+                                <div onclick="flipCard()" class="perspective-1000 w-full h-64 cursor-pointer select-none">
+                                    <div id="fc-inner" class="relative w-full h-full transition-transform duration-500 transform-style-3d">
+                                        <!-- Fronte -->
+                                        <div class="absolute inset-0 backface-hidden rounded-2xl p-6 flex flex-col items-center justify-center text-center text-white border-2 border-sky-950 shadow-[0_12px_26px_rgba(0,22,55,0.65)]"
+                                             style="background: linear-gradient(180deg, #5ce1ff 0%, #0088ee 49%, #004e9e 50%, #0073d6 100%);">
+                                            <span class="text-[10px] font-extrabold uppercase tracking-widest bg-sky-950/50 border border-white/50 px-3 py-0.5 rounded-full mb-4">Termine / Concetto</span>
+                                            <h4 id="fc-front" class="text-xl sm:text-2xl font-extrabold leading-snug drop-shadow-[0_2px_3px_rgba(0,0,0,0.85)]"></h4>
+                                            <span class="text-xs text-cyan-100 mt-6 font-bold"><i class="fa-solid fa-rotate mr-1"></i>Gira scheda</span>
+                                        </div>
+
+                                        <!-- Retro -->
+                                        <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl p-6 flex flex-col items-center justify-center text-center text-sky-950 bg-gradient-to-b from-white to-emerald-50 border-2 border-emerald-700 shadow-[0_12px_26px_rgba(0,40,20,0.6)]">
+                                            <span class="retro-badge text-[10px] font-extrabold uppercase tracking-widest bg-emerald-600 text-white px-3 py-0.5 rounded-full mb-3">Definizione</span>
+                                            <p id="fc-back" class="text-sm sm:text-base font-bold text-slate-800 leading-relaxed"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-3 pt-5 mt-4 border-t-2 border-sky-200">
+                                <button onclick="prevCard()" class="retro-btn-light flex-1 py-2.5 px-4 text-xs sm:text-sm">
+                                    <i class="fa-solid fa-chevron-left mr-1"></i> Precedente
+                                </button>
+                                <button onclick="nextCard()" class="aqua-btn flex-1 py-2.5 px-4 text-xs sm:text-sm">
+                                    Successiva <i class="fa-solid fa-chevron-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="retro-divider mb-8">
+
+                    <!-- 4.3 GLOSSARIO TECNICO RICERCABILE -->
+                    <div class="aero-panel-3d rounded-xl p-5 sm:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b-2 border-sky-200 mb-5">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-full aero-orb text-white flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-book-bookmark drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-extrabold text-sky-950">Glossario Tecnico Ricercabile</h3>
+                                    <p class="text-xs sm:text-sm text-slate-700">Filtra istantaneamente i termini fondamentali delle reti e del Web</p>
+                                </div>
+                            </div>
+                            <div class="relative w-full sm:w-80">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sky-700 text-sm"></i>
+                                <input type="text" id="gloss-input" oninput="filterGloss()" placeholder="Cerca (es. TLS, Porta, Stateless, IP)..."
+                                       class="retro-input w-full pl-10 pr-4 py-2 rounded-full text-sm font-semibold">
+                            </div>
+                        </div>
+
+                        <div id="gloss-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                        <div id="gloss-none" class="hidden text-center py-8 font-bold text-slate-700 text-sm">
+                            Nessun termine corrisponde alla ricerca inserita.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 5. FOOTER & CREDITI (FINESTRA VISTA)                              -->
+        <!-- ================================================================= -->
+        <footer id="crediti" class="pt-4 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="vista-window rounded-xl overflow-hidden">
+                <div class="vista-titlebar px-4 py-2 flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-bold"><i class="fa-solid fa-circle-info mr-2 text-cyan-200"></i>Informazioni sul Progetto, Fonti RFC &amp; Crediti</span>
+                    <span class="text-[11px] font-mono">GitHub Pages Ready</span>
+                </div>
+
+                <div class="p-6 sm:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-6 border-b-2 border-sky-200">
+                        <div>
+                            <div class="flex items-center gap-2.5 font-extrabold text-lg text-sky-950 mb-2.5">
+                                <div class="w-9 h-9 rounded-full aero-orb text-white flex items-center justify-center text-sm">
+                                    <i class="fa-solid fa-globe drop-shadow-[0_1px_2px_#000]"></i>
+                                </div>
+                                <span>NetAero &bull; Sistemi e Reti</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+                                Sito web divulgativo e interattivo realizzato per il laboratorio di Sistemi e Reti. Progettato per funzionare senza server applicativo su computer e smartphone.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 class="font-extrabold text-xs uppercase tracking-wider text-sky-950 mb-3">Fonti e Standard Ufficiali</h4>
+                            <ul class="space-y-1.5 text-xs text-slate-800 font-semibold">
+                                <li><i class="fa-solid fa-file-code text-sky-700 mr-1.5"></i><strong>RFC 9110:</strong> HTTP Semantics (IETF)</li>
+                                <li><i class="fa-solid fa-file-code text-sky-700 mr-1.5"></i><strong>RFC 1035:</strong> Domain Names / DNS (IETF)</li>
+                                <li><i class="fa-solid fa-file-code text-sky-700 mr-1.5"></i><strong>RFC 8446:</strong> TLS Protocol Version 1.3 (IETF)</li>
+                                <li><i class="fa-solid fa-file-code text-sky-700 mr-1.5"></i><strong>RFC 5321:</strong> Simple Mail Transfer Protocol (SMTP)</li>
+                                <li><i class="fa-solid fa-book text-emerald-700 mr-1.5"></i><strong>MDN Web Docs:</strong> Documentazione HTTP &amp; Web</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-extrabold text-xs uppercase tracking-wider text-sky-950 mb-3">Crediti Tecnici &amp; Metodologia</h4>
+                            <p class="text-xs text-slate-800 leading-relaxed mb-3">
+                                Sviluppato in <strong>HTML5, Tailwind CSS e JavaScript Vanilla</strong> con icone <strong>Font Awesome</strong> ed estetica <em>Frutiger Aero / Windows Vista (2005–2008)</em>.
+                            </p>
+                            <div class="p-3 rounded-xl bg-white border border-sky-400 text-[11px] text-slate-800 shadow-[0_4px_10px_rgba(0,25,55,0.2)]">
+                                <i class="fa-solid fa-robot text-sky-700 mr-1"></i>
+                                <strong>Uso consapevole dell'IA:</strong> Contenuti generati con supporto di IA generativa e verificati criticamente sugli standard RFC e MDN.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-5 flex flex-col sm:flex-row justify-between items-center text-xs font-bold text-sky-950 gap-3">
+                        <span>Progetto Didattico di Sistemi e Reti — Pubblicabile su GitHub Pages</span>
+                        <a href="#" class="aqua-btn px-5 py-2 text-xs">
+                            Torna su <i class="fa-solid fa-arrow-up ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT INTERATTIVO                                                -->
+    <!-- ===================================================================== -->
+    <script>
+        // ---------------------------------------------------------------------
+        // NAVIGAZIONE MOBILE & CONTROLLO BOLLE AERO
+        // ---------------------------------------------------------------------
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+        let bubblesVisible = true;
+        function toggleBubbles() {
+            bubblesVisible = !bubblesVisible;
+            const layer = document.getElementById('bubbles-layer');
+            const btn = document.getElementById('bubble-toggle-btn');
+            layer.style.display = bubblesVisible ? 'block' : 'none';
+            btn.innerHTML = `<i class="fa-solid fa-droplet mr-1"></i>Bolle: ${bubblesVisible ? 'ON' : 'OFF'}`;
+        }
+
+        // ---------------------------------------------------------------------
+        // TEORIA: STACK TCP/IP CLICCABILE
+        // ---------------------------------------------------------------------
+        const tcpLayersInfo = {
+            4: {
+                title: "Livello 4 — Applicazione",
+                desc: "È il livello più vicino all'utente. Definisce il formato dei messaggi scambiati tra programmi (browser, client email) e si affida al livello Trasporto per inviare i dati in rete."
+            },
+            3: {
+                title: "Livello 3 — Trasporto (TCP / UDP)",
+                desc: "Identifica le singole applicazioni tramite i numeri di porta (es. 80 HTTP, 443 HTTPS, 53 DNS). TCP garantisce consegna affidabile e ordinata; UDP privilegia la velocità."
+            },
+            2: {
+                title: "Livello 2 — Internet (IP)",
+                desc: "Assegna gli indirizzi IP logici a mittente e destinatario e instrada i pacchetti attraverso i router da una rete all'altra fino a destinazione."
+            },
+            1: {
+                title: "Livello 1 — Accesso alla Rete",
+                desc: "Si occupa della trasmissione fisica dei bit sotto forma di segnali elettrici, onde radio (Wi-Fi) o impulsi luminosi (fibra ottica)."
+            }
+        };
+
+        function selectTcpLayer(level) {
+            document.querySelectorAll('.tcp-layer-btn').forEach(btn => {
+                btn.className = 'tcp-layer-btn retro-btn-light w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between';
+            });
+            const active = document.getElementById(`tcp-btn-${level}`);
+            active.className = 'tcp-layer-btn aqua-btn w-full text-left px-4 py-2.5 text-xs sm:text-sm flex items-center justify-between';
+
+            const info = tcpLayersInfo[level];
+            document.getElementById('tcp-layer-detail').innerHTML = `<strong class="text-sky-900 block mb-1">${info.title}:</strong>${info.desc}`;
+        }
+
+        // ---------------------------------------------------------------------
+        // TEORIA: ANATOMIA URL INTERATTIVA
+        // ---------------------------------------------------------------------
+        const urlPartsInfo = {
+            schema: {
+                badge: "1. Schema / Protocollo",
+                badgeClass: "bg-amber-100 text-amber-900",
+                title: "https (HyperText Transfer Protocol Secure)",
+                desc: "Indica al browser quale protocollo applicativo usare per dialogare con il server. Qui specifica HTTP cifrato tramite TLS."
+            },
+            host: {
+                badge: "2. Host / Nome di Dominio",
+                badgeClass: "bg-sky-100 text-sky-950",
+                title: "www.esempio.it",
+                desc: "Identifica il server su Internet. Prima di inviare la richiesta HTTP, il browser usa il DNS per tradurre questo nome in un indirizzo IP."
+            },
+            porta: {
+                badge: "3. Porta Logica",
+                badgeClass: "bg-slate-200 text-slate-900",
+                title: ":443 (Porta standard HTTPS)",
+                desc: "Indica la porta TCP del servizio sul server. Spesso è omessa perché i browser usano automaticamente la 80 per HTTP e la 443 per HTTPS."
+            },
+            path: {
+                badge: "4. Path (Percorso)",
+                badgeClass: "bg-emerald-100 text-emerald-950",
+                title: "/corso/reti",
+                desc: "Specifica il percorso della risorsa o dell'endpoint API richiesto all'interno del Web Server."
+            },
+            query: {
+                badge: "5. Query String",
+                badgeClass: "bg-sky-100 text-sky-950",
+                title: "?modulo=2",
+                desc: "Inizia con '?' e trasporta parametri sotto forma di coppie chiave=valore (separate da '&') per filtrare o inviare dati."
+            },
+            fragment: {
+                badge: "6. Fragment (Ancora)",
+                badgeClass: "bg-amber-100 text-amber-950",
+                title: "#http",
+                desc: "Inizia con '#' e indica al browser di scorrere fino a un punto preciso della pagina. Non viene mai inviato al server nella richiesta HTTP."
+            }
+        };
+
+        function selectUrlPart(key) {
+            const item = urlPartsInfo[key];
+            const badgeEl = document.getElementById('url-part-badge');
+            badgeEl.textContent = item.badge;
+            badgeEl.className = `retro-badge inline-block px-3 py-0.5 rounded-full font-bold text-xs mb-1 ${item.badgeClass}`;
+            document.getElementById('url-part-title').textContent = item.title;
+            document.getElementById('url-part-desc').textContent = item.desc;
+        }
+
+        // ---------------------------------------------------------------------
+        // TEORIA: SCHEDE PROTOCOLLI
+        // ---------------------------------------------------------------------
+        function switchProtoTab(proto) {
+            document.querySelectorAll('.pcontent-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.ptab-btn').forEach(b => {
+                b.className = 'ptab-btn retro-btn-light px-4 py-2 text-xs sm:text-sm';
+            });
+            document.getElementById(`pcontent-${proto}`).classList.remove('hidden');
+            const active = document.getElementById(`ptab-${proto}`);
+            active.className = 'ptab-btn aqua-btn px-4 py-2 text-xs sm:text-sm';
+        }
+
+        // ---------------------------------------------------------------------
+        // SIMULATORE 1: RISOLUZIONE DNS
+        // ---------------------------------------------------------------------
+        let isDnsBusy = false;
+        const wait = ms => new Promise(r => setTimeout(r, ms));
+
+        function setDnsHighlight(id) {
+            ['browser', 'resolver', 'root', 'tld', 'auth'].forEach(n => {
+                document.getElementById(`dnode-${n}`).classList.remove('dns-node-active');
+            });
+            if (id) document.getElementById(`dnode-${id}`).classList.add('dns-node-active');
+        }
+
+        function setDnsProgress(pct) {
+            document.getElementById('dns-progress-bar').style.width = `${pct}%`;
+            document.getElementById('dns-progress-label').textContent = `${pct}%`;
+        }
+
+        function logDns(msg, cls = 'text-slate-100') {
+            const box = document.getElementById('dns-log');
+            const p = document.createElement('p');
+            p.className = cls;
+            p.innerHTML = msg;
+            box.appendChild(p);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        async function startDnsSim() {
+            if (isDnsBusy) return;
+            isDnsBusy = true;
+
+            const btn = document.getElementById('dns-run-btn');
+            const badge = document.getElementById('dns-badge');
+            const logBox = document.getElementById('dns-log');
+            const [domain, ip, tld] = document.getElementById('dns-domain-select').value.split('|');
+            const mode = document.getElementById('dns-cache-mode').value;
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            logBox.innerHTML = '';
+            badge.textContent = 'Query in corso...';
+            setDnsProgress(10);
+
+            if (mode === 'hit') {
+                setDnsHighlight('browser');
+                logDns(`[1] Browser: Cerco <strong>${domain}</strong> nella cache DNS locale...`, 'text-sky-300');
+                await wait(750);
+                setDnsProgress(100);
+                logDns(`[CACHE HIT!] Record già presente in memoria! IP: <strong class="text-emerald-400">${ip}</strong> (TTL residuo: 285s). Nessun traffico esterno necessario.`, 'text-emerald-400 font-bold');
+                badge.textContent = `Risolto da Cache (${ip})`;
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                isDnsBusy = false;
+                return;
+            }
+
+            setDnsHighlight('browser');
+            setDnsProgress(18);
+            logDns(`[1] Browser: <strong>${domain}</strong> non è in cache locale. Invio query ricorsiva al Resolver ISP.`, 'text-slate-100');
+            await wait(900);
+
+            setDnsHighlight('resolver');
+            setDnsProgress(36);
+            logDns(`[2] Resolver ISP: Cache vuota per <strong>${domain}</strong>. Interrogo il <strong>Root Server (.)</strong>.`, 'text-sky-300');
+            await wait(950);
+
+            setDnsHighlight('root');
+            setDnsProgress(54);
+            logDns(`[3] Root Server: Non conosco l'IP finale, ma ti indico l'indirizzo del TLD Server per <strong>${tld}</strong>.`, 'text-amber-300');
+            await wait(950);
+
+            setDnsHighlight('tld');
+            setDnsProgress(72);
+            document.getElementById('dnode-tld-sub').textContent = `TLD ${tld}`;
+            logDns(`[4] TLD Server (${tld}): Il Name Server autoritativo per <strong>${domain}</strong> è ns1.${domain.replace('www.', '')}.`, 'text-purple-300');
+            await wait(950);
+
+            setDnsHighlight('auth');
+            setDnsProgress(88);
+            logDns(`[5] Server Autoritativo: Trovato Record A! <strong>${domain}</strong> &rarr; <strong class="text-emerald-400">${ip}</strong>.`, 'text-emerald-300');
+            await wait(900);
+
+            setDnsHighlight('browser');
+            setDnsProgress(100);
+            logDns(`[6] Browser: IP <strong class="text-emerald-400">${ip}</strong> salvato in cache! Pronto per la connessione HTTP/HTTPS.`, 'text-emerald-400 font-bold');
+            badge.textContent = `Risolto: ${ip}`;
+
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            isDnsBusy = false;
+        }
+
+        // ---------------------------------------------------------------------
+        // SIMULATORE 2: SCAMBIO HTTP
+        // ---------------------------------------------------------------------
+        function refreshHttpRaw() {
+            const method = document.getElementById('http-method').value;
+            const path = document.getElementById('http-path').value;
+            const auth = document.getElementById('http-auth').value;
+            const bodyWrap = document.getElementById('http-body-wrap');
+            const bodyVal = document.getElementById('http-body').value;
+
+            if (method === 'POST') bodyWrap.classList.remove('hidden');
+            else bodyWrap.classList.add('hidden');
+
+            let req = `${method} ${path} HTTP/1.1\n`;
+            req += `Host: www.esempio.it\n`;
+            req += `User-Agent: NetAero-Explorer/2.0\n`;
+            req += `Accept: application/json, text/html\n`;
+            if (auth) req += `${auth}\n`;
+            if (method === 'POST') {
+                req += `Content-Type: application/json\n`;
+                req += `Content-Length: ${bodyVal.length}\n\n`;
+                req += bodyVal;
+            }
+            document.getElementById('http-raw-req').textContent = req;
+        }
+
+        async function executeHttpExchange() {
+            const method = document.getElementById('http-method').value;
+            const path = document.getElementById('http-path').value;
+            const auth = document.getElementById('http-auth').value;
+            const bodyVal = document.getElementById('http-body').value;
+            const pill = document.getElementById('http-status-pill');
+            const resBox = document.getElementById('http-raw-res');
+            const pkt = document.getElementById('http-flying-packet');
+
+            pkt.textContent = `${method} ${path}`;
+            pkt.classList.remove('hidden', 'animate-packet-back');
+            void pkt.offsetWidth;
+            pkt.classList.add('animate-packet-go');
+            pill.textContent = 'Invio...';
+            await wait(750);
+
+            let status = '200 OK';
+            let pillCls = 'bg-emerald-900 text-emerald-300 border border-emerald-400';
+            let cType = 'application/json';
+            let payload = '';
+
+            if (path === '/risorsa-inesistente') {
+                status = '404 Not Found';
+                pillCls = 'bg-amber-900 text-amber-300 border border-amber-400';
+                payload = JSON.stringify({ errore: "Not Found", dettaglio: "Nessuna risorsa trovata a questo URL." }, null, 2);
+            } else if (path === '/area-riservata' && !auth) {
+                status = '401 Unauthorized';
+                pillCls = 'bg-rose-900 text-rose-300 border border-rose-400';
+                payload = JSON.stringify({ errore: "Unauthorized", suggerimento: "Seleziona l'header Authorization: Bearer." }, null, 2);
+            } else if (path === '/index.html') {
+                if (method !== 'GET') {
+                    status = '405 Method Not Allowed';
+                    pillCls = 'bg-amber-900 text-amber-300 border border-amber-400';
+                    payload = JSON.stringify({ errore: `Metodo ${method} non permesso su /index.html` }, null, 2);
+                } else {
+                    cType = 'text/html; charset=UTF-8';
+                    payload = `<!DOCTYPE html>\n<html>\n  <body><h1>Pagina Principale NetAero</h1></body>\n</html>`;
+                }
+            } else if (path === '/api/studenti') {
+                if (method === 'GET') {
+                    payload = JSON.stringify([
+                        { id: 1, studente: "Luca", classe: "3A" },
+                        { id: 2, studente: "Sofia", classe: "3B" }
+                    ], null, 2);
+                } else if (method === 'POST') {
+                    try {
+                        const parsed = JSON.parse(bodyVal);
+                        status = '201 Created';
+                        payload = JSON.stringify({ esito: "Risorsa creata", id: 3, dato: parsed }, null, 2);
+                    } catch (err) {
+                        status = '400 Bad Request';
+                        pillCls = 'bg-rose-900 text-rose-300 border border-rose-400';
+                        payload = JSON.stringify({ errore: "Sintassi JSON non valida nel body" }, null, 2);
+                    }
+                } else if (method === 'DELETE') {
+                    payload = JSON.stringify({ esito: "Risorsa eliminata correttamente" }, null, 2);
+                }
+            } else {
+                payload = JSON.stringify({ accesso: "Consentito", utente: "Studente Verificato" }, null, 2);
+            }
+
+            pkt.textContent = status;
+            pkt.classList.remove('animate-packet-go');
+            void pkt.offsetWidth;
+            pkt.classList.add('animate-packet-back');
+            await wait(750);
+            pkt.classList.add('hidden');
+
+            let rawRes = `HTTP/1.1 ${status}\n`;
+            rawRes += `Server: NetAero-HTTPd/2.4\n`;
+            rawRes += `Content-Type: ${cType}\n`;
+            rawRes += `Content-Length: ${payload.length}\n\n`;
+            rawRes += payload;
+
+            pill.textContent = status;
+            pill.className = `px-2.5 py-0.5 rounded-full text-[10px] font-bold ${pillCls}`;
+            resBox.textContent = rawRes;
+        }
+        refreshHttpRaw();
+
+        // ---------------------------------------------------------------------
+        // SIMULATORE 3: CONSOLE SMTP
+        // ---------------------------------------------------------------------
+        let smtpIdx = 0;
+        const smtpDialog = [
+            {
+                c: "C: EHLO client.scuola.it",
+                s: "S: 250-mail.scuola.it Hello client.scuola.it\nS: 250 OK",
+                note: "Con EHLO (Extended HELO) il client si presenta al server e negozia le estensioni SMTP supportate."
+            },
+            {
+                c: "C: MAIL FROM:<marco@scuola.it>",
+                s: "S: 250 2.1.0 Sender OK",
+                note: "Il comando MAIL FROM indica al server l'indirizzo email del mittente. Il codice 250 conferma che l'operazione è valida."
+            },
+            {
+                c: "C: RCPT TO:<docente@scuola.it>",
+                s: "S: 250 2.1.5 Recipient OK",
+                note: "RCPT TO specifica il destinatario del messaggio (può essere ripetuto più volte per invii multipli)."
+            },
+            {
+                c: "C: DATA",
+                s: "S: 354 Start mail input; end with <CRLF>.<CRLF>",
+                note: "Il server risponde con 354 invitando il client a trasmettere intestazioni e testo dell'email, terminando con un punto isolato (.)."
+            },
+            {
+                c: "C: Subject: Consegna Laboratorio Reti\nC: Buongiorno, invio il link del progetto.\nC: .",
+                s: "S: 250 2.0.0 OK: Message accepted for delivery",
+                note: "Il punto isolato su una riga segnala la fine del messaggio: il server accoda l'email per la consegna!"
+            },
+            {
+                c: "C: QUIT",
+                s: "S: 221 2.0.0 Bye",
+                note: "Il client chiude in modo pulito la sessione SMTP e il server risponde con 221 prima di chiudere la connessione TCP."
+            }
+        ];
+
+        function runSmtpStep(step) {
+            if (step !== smtpIdx) return;
+            const log = document.getElementById('smtp-log');
+            const item = smtpDialog[step];
+
+            const cEl = document.createElement('div');
+            cEl.className = 'text-sky-300 whitespace-pre-line';
+            cEl.textContent = item.c;
+            log.appendChild(cEl);
+
+            const sEl = document.createElement('div');
+            sEl.className = 'text-emerald-400 whitespace-pre-line';
+            sEl.textContent = item.s;
+            log.appendChild(sEl);
+            log.scrollTop = log.scrollHeight;
+
+            document.getElementById('smtp-didactic-note').innerHTML =
+                `<strong class="text-sky-950"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>Spiegazione:</strong> ${item.note}`;
+
+            const currBtn = document.getElementById(`sbtn-${step}`);
+            currBtn.disabled = true;
+            currBtn.className = 'aqua-btn-green w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between opacity-90';
+
+            smtpIdx++;
+            if (smtpIdx < smtpDialog.length) {
+                const nextBtn = document.getElementById(`sbtn-${smtpIdx}`);
+                nextBtn.disabled = false;
+                nextBtn.className = 'aqua-btn w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-pointer';
+            }
+        }
+
+        function resetSmtpSim() {
+            smtpIdx = 0;
+            document.getElementById('smtp-log').innerHTML = '<div class="text-emerald-400">S: 220 mail.scuola.it ESMTP Service Ready</div>';
+            document.getElementById('smtp-didactic-note').innerHTML =
+                '<strong class="text-sky-950"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>Spiegazione:</strong> Il server risponde con <code class="font-mono bg-white px-1.5 rounded border border-sky-300">220</code> per segnalare che il canale TCP è aperto ed è pronto a ricevere il comando di presentazione <code class="font-mono bg-white px-1.5 rounded border border-sky-300">EHLO</code>.';
+
+            for (let i = 0; i < smtpDialog.length; i++) {
+                const b = document.getElementById(`sbtn-${i}`);
+                if (i === 0) {
+                    b.disabled = false;
+                    b.className = 'aqua-btn w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-pointer';
+                } else {
+                    b.disabled = true;
+                    b.className = 'retro-btn-light opacity-55 w-full text-left px-4 py-2.5 font-mono text-xs flex items-center justify-between cursor-not-allowed';
+                }
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // AREA STUDIO 1: QUIZ DI AUTOVALUTAZIONE (8 DOMANDE)
+        // ---------------------------------------------------------------------
+        const quizQuestions = [
+            {
+                q: "Qual è la funzione principale del protocollo DNS nello stack TCP/IP?",
+                opts: [
+                    "Cifrare i dati scambiati tra browser e sito web",
+                    "Tradurre i nomi di dominio leggibili nei rispettivi indirizzi IP",
+                    "Inviare messaggi di posta elettronica ai server SMTP",
+                    "Suddividere i file video in pacchetti Ethernet"
+                ],
+                ans: 1,
+                exp: "Il DNS (Domain Name System) associa nomi come www.esempio.it ai relativi indirizzi IPv4 o IPv6 tramite record A e AAAA."
+            },
+            {
+                q: "Cosa significa che il protocollo HTTP è 'stateless'?",
+                opts: [
+                    "Non può trasportare immagini o file multimediali",
+                    "Funziona esclusivamente su reti locali senza router",
+                    "Ogni richiesta è indipendente e il server non ricorda quelle precedenti",
+                    "Non utilizza mai intestazioni (header)"
+                ],
+                ans: 2,
+                exp: "HTTP non mantiene stato tra una richiesta e l'altra: per ricordare l'utente tra più pagine si usano Cookie o Token."
+            },
+            {
+                q: "Quale codice di stato HTTP indica che una nuova risorsa è stata creata con successo (ad esempio dopo una POST)?",
+                opts: [
+                    "201 Created",
+                    "301 Moved Permanently",
+                    "404 Not Found",
+                    "503 Service Unavailable"
+                ],
+                ans: 0,
+                exp: "I codici 2xx indicano successo: 200 OK è il successo generico, mentre 201 Created conferma la creazione di una nuova risorsa."
+            },
+            {
+                q: "In quale livello dello stack TCP/IP operano HTTP, DNS, HTTPS e SMTP?",
+                opts: [
+                    "Livello di Accesso alla Rete",
+                    "Livello Internet",
+                    "Livello di Trasporto",
+                    "Livello Applicazione"
+                ],
+                ans: 3,
+                exp: "Tutti e quattro i protocolli operano al livello Applicazione (livello 4), appoggiandosi a TCP o UDP al livello Trasporto."
+            },
+            {
+                q: "Quali tre garanzie fondamentali offre HTTPS grazie al protocollo TLS?",
+                opts: [
+                    "Compressione, velocità e indicizzazione SEO",
+                    "Riservatezza, integrità e autenticità del server",
+                    "Indirizzo IP statico, cache DNS e backup automatico",
+                    "Invio email, trasferimento file e desktop remoto"
+                ],
+                ans: 1,
+                exp: "TLS cifra i dati (riservatezza), rileva eventuali alterazioni (integrità) e verifica l'identità tramite certificati digitali (autenticità)."
+            },
+            {
+                q: "Quale parte di un URL non viene mai inviata al server nella richiesta HTTP?",
+                opts: [
+                    "Il Path (/corso/reti)",
+                    "La Query String (?modulo=2)",
+                    "Il Fragment (#http)",
+                    "Il nome dell'Host"
+                ],
+                ans: 2,
+                exp: "Il fragment (#...) viene interpretato esclusivamente dal browser lato client per posizionarsi su una sezione interna della pagina."
+            },
+            {
+                q: "Quale comando SMTP viene utilizzato per indicare l'indirizzo email del destinatario?",
+                opts: [
+                    "MAIL FROM:",
+                    "RCPT TO:",
+                    "EHLO",
+                    "DATA"
+                ],
+                ans: 1,
+                exp: "MAIL FROM specifica il mittente, mentre RCPT TO (Recipient To) specifica il destinatario del messaggio."
+            },
+            {
+                q: "Quale porta TCP standard è associata al protocollo HTTPS?",
+                opts: [
+                    "Porta 25",
+                    "Porta 53",
+                    "Porta 80",
+                    "Porta 443"
+                ],
+                ans: 3,
+                exp: "La porta 80 è lo standard per HTTP non cifrato; la porta 443 è lo standard per HTTPS."
+            }
+        ];
+
+        let qIndex = 0;
+        let qScore = 0;
+        let qLocked = false;
+
+        function renderQuiz() {
+            qLocked = false;
+            const cur = quizQuestions[qIndex];
+            document.getElementById('quiz-step-pill').textContent = `Domanda ${qIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((qIndex + 1) / quizQuestions.length) * 100}%`;
+            document.getElementById('quiz-q-text').textContent = cur.q;
+            document.getElementById('quiz-fb-box').classList.add('hidden');
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = 'retro-btn-light opacity-50 px-5 py-2 text-xs sm:text-sm cursor-not-allowed';
+            nextBtn.innerHTML = qIndex === quizQuestions.length - 1
+                ? 'Risultato <i class="fa-solid fa-flag-checkered ml-1"></i>'
+                : 'Prossima <i class="fa-solid fa-arrow-right ml-1"></i>';
+
+            const list = document.getElementById('quiz-opts-list');
+            list.innerHTML = '';
+            cur.opts.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = 'q-opt retro-btn-light w-full text-left px-4 py-3 text-xs sm:text-sm flex items-center gap-3';
+                b.innerHTML = `<span class="w-7 h-7 rounded-full bg-sky-700 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow">${String.fromCharCode(65 + i)}</span><span>${opt}</span>`;
+                b.onclick = () => checkAnswer(i);
+                list.appendChild(b);
+            });
+        }
+
+        function checkAnswer(chosen) {
+            if (qLocked) return;
+            qLocked = true;
+            const cur = quizQuestions[qIndex];
+            const btns = document.querySelectorAll('.q-opt');
+            const fb = document.getElementById('quiz-fb-box');
+
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === cur.ans) {
+                    b.className = 'q-opt aqua-btn-green w-full text-left px-4 py-3 text-xs sm:text-sm flex items-center gap-3';
+                } else if (i === chosen) {
+                    b.className = 'q-opt aqua-btn-orange w-full text-left px-4 py-3 text-xs sm:text-sm flex items-center gap-3';
+                }
+            });
+
+            if (chosen === cur.ans) {
+                qScore++;
+                document.getElementById('quiz-score-num').textContent = qScore;
+                fb.className = 'p-4 rounded-xl text-xs sm:text-sm mb-4 bg-emerald-100 border-2 border-emerald-500 text-emerald-950 shadow-inner';
+                fb.innerHTML = `<strong><i class="fa-solid fa-circle-check text-emerald-700 mr-1.5"></i>Corretto!</strong> ${cur.exp}`;
+            } else {
+                fb.className = 'p-4 rounded-xl text-xs sm:text-sm mb-4 bg-amber-100 border-2 border-amber-500 text-amber-950 shadow-inner';
+                fb.innerHTML = `<strong><i class="fa-solid fa-circle-xmark text-rose-700 mr-1.5"></i>Risposta errata.</strong> ${cur.exp}`;
+            }
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = 'aqua-btn px-6 py-2.5 text-xs sm:text-sm cursor-pointer';
+        }
+
+        function goNextQuestion() {
+            if (qIndex < quizQuestions.length - 1) {
+                qIndex++;
+                renderQuiz();
+            } else {
+                document.getElementById('quiz-active-view').classList.add('hidden');
+                document.getElementById('quiz-bottom-bar').classList.add('hidden');
+                document.getElementById('quiz-end-view').classList.remove('hidden');
+                const perc = Math.round((qScore / quizQuestions.length) * 100);
+                document.getElementById('quiz-final-msg').innerHTML = `Hai totalizzato <strong>${qScore} su ${quizQuestions.length}</strong> punti (${perc}%).`;
+            }
+        }
+
+        function resetQuiz() {
+            qIndex = 0;
+            qScore = 0;
+            document.getElementById('quiz-score-num').textContent = '0';
+            document.getElementById('quiz-active-view').classList.remove('hidden');
+            document.getElementById('quiz-bottom-bar').classList.remove('hidden');
+            document.getElementById('quiz-end-view').classList.add('hidden');
+            renderQuiz();
+        }
+        renderQuiz();
+
+        // ---------------------------------------------------------------------
+        // AREA STUDIO 2: FLASHCARD 3D (10 CARTE)
+        // ---------------------------------------------------------------------
+        let cardsDeck = [
+            { f: "Modello Client-Server", b: "Architettura in cui un client avvia una richiesta e un server remoto elabora e restituisce la risorsa." },
+            { f: "HTTP Stateless", b: "Ogni richiesta HTTP è indipendente dalle precedenti; per mantenere lo stato si usano Cookie o Token." },
+            { f: "DNS (Domain Name System)", b: "Sistema distribuito che traduce i nomi di dominio (es. www.esempio.it) nei corrispondenti indirizzi IP." },
+            { f: "Record DNS A e AAAA", b: "Il record A mappa un dominio su un indirizzo IPv4 (32 bit); il record AAAA su un indirizzo IPv6 (128 bit)." },
+            { f: "Porte TCP 80 e 443", b: "La porta 80 è lo standard per HTTP in chiaro; la porta 443 è lo standard per HTTPS cifrato con TLS." },
+            { f: "TLS Handshake", b: "Fase iniziale di HTTPS in cui client e server verificano il certificato digitale e concordano la chiave simmetrica." },
+            { f: "Codice HTTP 404", b: "Not Found: errore lato client che indica che la risorsa all'URL richiesto non esiste sul server." },
+            { f: "Codice HTTP 500", b: "Internal Server Error: errore imprevisto verificatosi lato server durante l'elaborazione della richiesta." },
+            { f: "Protocollo SMTP", b: "Simple Mail Transfer Protocol: protocollo testuale per l'invio e l'inoltro di email (porte 25, 587, 465)." },
+            { f: "IMAP vs POP3", b: "Protocolli per ricevere email: IMAP sincronizza le cartelle sul server; POP3 scarica i messaggi sul dispositivo." }
+        ];
+
+        let fcPos = 0;
+        let fcFlipped = false;
+
+        function updateCardView() {
+            const inner = document.getElementById('fc-inner');
+            inner.classList.remove('rotate-y-180');
+            fcFlipped = false;
+            setTimeout(() => {
+                document.getElementById('fc-front').textContent = cardsDeck[fcPos].f;
+                document.getElementById('fc-back').textContent = cardsDeck[fcPos].b;
+                document.getElementById('fc-counter').textContent = `${fcPos + 1} / ${cardsDeck.length}`;
+            }, 140);
+        }
+
+        function flipCard() {
+            fcFlipped = !fcFlipped;
+            document.getElementById('fc-inner').classList.toggle('rotate-y-180', fcFlipped);
+        }
+
+        function nextCard() {
+            fcPos = (fcPos + 1) % cardsDeck.length;
+            updateCardView();
+        }
+
+        function prevCard() {
+            fcPos = (fcPos - 1 + cardsDeck.length) % cardsDeck.length;
+            updateCardView();
+        }
+
+        function shuffleCards() {
+            for (let i = cardsDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cardsDeck[i], cardsDeck[j]] = [cardsDeck[j], cardsDeck[i]];
+            }
+            fcPos = 0;
+            updateCardView();
+        }
+        updateCardView();
+
+        // ---------------------------------------------------------------------
+        // AREA STUDIO 3: GLOSSARIO RICERCABILE
+        // ---------------------------------------------------------------------
+        const glossaryList = [
+            { t: "Client", c: "Architettura", d: "Software o dispositivo (es. browser) che invia richieste a un server per ottenere risorse o servizi." },
+            { t: "Server", c: "Architettura", d: "Sistema sempre attivo in rete che ascolta su determinate porte e risponde alle richieste dei client." },
+            { t: "Indirizzo IP", c: "Livello Internet", d: "Identificativo numerico univoco assegnato a ciascun dispositivo connesso a una rete TCP/IP." },
+            { t: "Porta TCP/UDP", c: "Livello Trasporto", d: "Numero a 16 bit (0–65535) che identifica uno specifico servizio applicativo attivo su un host." },
+            { t: "Stateless", c: "HTTP", d: "Caratteristica di un protocollo in cui ogni transazione è indipendente e non conserva memoria delle precedenti." },
+            { t: "TTL (Time To Live)", c: "DNS / Reti", d: "Tempo (in secondi) per cui un record DNS può restare salvato nella cache prima di essere aggiornato." },
+            { t: "Certificato Digitale", c: "Sicurezza TLS", d: "Documento firmato da una Certification Authority (CA) che lega una chiave pubblica all'identità di un dominio." },
+            { t: "Header (Intestazione)", c: "Protocolli", d: "Metadati posti all'inizio di un messaggio HTTP o di un pacchetto per descriverne formato, mittente o regole." },
+            { t: "Payload (Body)", c: "Protocolli", d: "Il contenuto effettivo trasportato dal messaggio (es. codice HTML, dati JSON o testo di un'email)." }
+        ];
+
+        function renderGloss(q = '') {
+            const grid = document.getElementById('gloss-grid');
+            const empty = document.getElementById('gloss-none');
+            const term = q.toLowerCase().trim();
+
+            const matches = glossaryList.filter(x =>
+                x.t.toLowerCase().includes(term) ||
+                x.c.toLowerCase().includes(term) ||
+                x.d.toLowerCase().includes(term)
+            );
+
+            grid.innerHTML = '';
+            if (matches.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            matches.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'p-4 rounded-xl bg-white border border-sky-400 shadow-[0_6px_14px_rgba(0,25,60,0.28)] hover:border-sky-600 transition';
+                div.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <span class="font-extrabold text-sky-950 text-sm">${item.t}</span>
+                        <span class="retro-badge text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-sky-700 text-white">${item.c}</span>
+                    </div>
+                    <p class="text-xs text-slate-800 leading-relaxed">${item.d}</p>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function filterGloss() {
+            renderGloss(document.getElementById('gloss-input').value);
+        }
+        renderGloss();
+    </script>
+</body>
+</html>
